@@ -1,4 +1,5 @@
-from flask import current_app,render_template, session, request, redirect,jsonify
+from flask import render_template, session, request, redirect,jsonify
+from flask_login import login_required,current_user,login_user,logout_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from . import app
@@ -30,19 +31,18 @@ def signup():
 
     new_user = User(username=data['username'],email=data['email'],password=data['0password'])
 
-    with current_app.app_context():
-        try:
-            db.session.add(new_user)
-            db.session.commit()
-        except IntegrityError as e:
-            db.session.rollback()
-            column = str(e.orig).split('.')[-1].replace('\'', '').replace('\"', '').split('.')[-1].strip()
-            if column == 'email':
-                return render_template('signup.html',rData=data,error="Email already exists")
-            elif column == 'username':
-                return render_template('signup.html',rData=data,error="Username already exists")
-            else:
-                return render_template('signup.html',rData=data,error="Unexpected Error")
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()
+        column = str(e.orig).split('.')[-1].replace('\'', '').replace('\"', '').split('.')[-1].strip()
+        if column == 'email':
+            return render_template('signup.html',rData=data,error="Email already exists")
+        elif column == 'username':
+            return render_template('signup.html',rData=data,error="Username already exists")
+        else:
+            return render_template('signup.html',rData=data,error="Unexpected Error")
 
     return redirect('/login')
 
@@ -57,26 +57,26 @@ def login():
         result = f"Require:{','.join(rq)}"
         return jsonify(result)
     
-    with current_app.app_context():
-        user = User.query.filter_by(email=data['email']).first()
-
+    user = User.query.filter_by(email=data['email']).first()
     if user and user.password == data['0password']:
         session['username'] = user.username
+
+        login_user(user,remember=True)
+        if request.args.get("next"):
+            return redirect(request.args.get("next"))
         return redirect('/')
+    
     return render_template('login.html', rData=data,error="Invalid username or password")
 
-@app.route('/logout', methods=["GET","POST"])
+@app.route('/logout',methods=["POST"])
+@login_required
 def logout():
-    session.clear()
+    logout_user()
     return redirect('/login')
 
 
 def init_app(app):
-    app.secret_key = 'your-secret-key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb.db'
     db.init_app(app)
 
     with app.app_context():
         db.create_all()
-
-        return app
