@@ -52,7 +52,7 @@ def adminPanel():
     if not db.isAdmin(session["userId"]):
         return redirect('/')
     
-    if any(i not in request.form for i in ['field']):
+    if 'field' not in request.form:
         return jsonify("Require:{field}")
     
     db.removeField(request.form['field'])
