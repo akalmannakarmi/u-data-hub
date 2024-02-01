@@ -20,7 +20,7 @@ def getStats():
     if not db.validAuth(request.form['authKey']):
         return jsonify('Error:"Invalid Key"')
     
-    data = db.getInfos(request.form['fields'])
+    data = db.getStats(request.form['fields'])
     
     return jsonify(data)
 
