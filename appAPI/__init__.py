@@ -1,9 +1,9 @@
 from flask import Blueprint
 
-app = Blueprint('appUser', __name__)
+app = Blueprint('appAPI', __name__)
 
 from data import db
-from . import profile,search
+from . import query
 
 def init(main):
     # session.init_app(main)

@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-app = Blueprint('basicApp', __name__)
+app = Blueprint('appBasic', __name__)
 
 from . import index,basic,session
 

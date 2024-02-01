@@ -8,17 +8,27 @@ class db:
         3:"bool",
         4:"string"
     }
-    categories={
-        "cat1":1
-    }
-    categoriesAndFields={
-        "Cat1":{
-            "field1":1
-        }
-    }
-    revCategoryAndField={
-        1:("Cat1","field1")
-    }
+    categories={}
+    categoriesAndFields={}
+    revCategoryAndField={}
+
+    def init():
+        db.createTables()
+        db.loadData()
+
+    def loadData():
+        cursor = db.__conn.cursor()
+        cursor.execute("SELECT id,name FROM Category")
+        result=cursor.fetchall()
+        for (id,name) in result:
+            db.categories[name]=id
+        cursor.execute("SELECT Field.id, Category.name AS category_name, Field.name, Field.dataTypeId FROM Field JOIN Category ON Field.categoryId = Category.id")
+        result=cursor.fetchall()
+        for (id,category,name,dataTypeId) in result:
+            if not isinstance(db.categoriesAndFields[category],dict):
+                db.categoriesAndFields[category]={}
+            db.categoriesAndFields[category][name]=id
+            db.revCategoryAndField[id]=(category,name,dataTypeId)
 
     def createTables():
         cursor = db.__conn.cursor()
@@ -31,7 +41,7 @@ class db:
             id INTEGER PRIMARY KEY,
             categoryId INTEGER,
             name TEXT,
-            dataType INTEGER,
+            dataTypeId INTEGER,
             UNIQUE (categoryId, name),
             FOREIGN KEY (categoryId) REFERENCES Category(id)
         );
@@ -82,7 +92,7 @@ class db:
         if category not in db.categories:
             raise Exception("Category does not exists")
         categoryId = db.categories[category]
-        cursor.execute("INSERT INTO Field (categoryId,name,dataType) VALUES (?,?,?)",(categoryId,field,dataTypeId))
+        cursor.execute("INSERT INTO Field (categoryId,name,dataTypeId) VALUES (?,?,?)",(categoryId,field,dataTypeId))
         db.__conn.commit()
 
         cursor.execute("SELECT id FROM Field WHERE categoryId=? AND name=?",(categoryId,field))
@@ -97,7 +107,7 @@ class db:
         cursor.execute("DELETE FROM Field WHERE id=?",(fieldId,))
         db.__conn.commit()
 
-        category,field=db.revCategoryAndField[fieldId]
+        category,field,dataTypeId=db.revCategoryAndField[fieldId]
         db.categoriesAndFields[category].pop(field,0)
         db.revCategoryAndField.pop(fieldId,0)
 
