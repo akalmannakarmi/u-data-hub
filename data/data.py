@@ -49,7 +49,7 @@ class db:
         cursor.execute("SELECT Field.id, Category.name AS category_name, Field.name, Field.dataTypeId FROM Field JOIN Category ON Field.categoryId = Category.id")
         result=cursor.fetchall()
         for (id,category,name,dataTypeId) in result:
-            if not isinstance(db.categoriesAndFields[category],dict):
+            if category not in db.categoriesAndFields:
                 db.categoriesAndFields[category]={}
             db.categoriesAndFields[category][name]=id
             db.revCategoryAndField[id]=(category,name,dataTypeId)

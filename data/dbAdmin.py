@@ -16,11 +16,17 @@ class dbAdmin:
             cursor.execute("SELECT COUNT(DISTINCT userId) FROM Data")
             cursor.close()
 
+    def dataTypes():
+        return db.dataTypes.copy()
+
     def getCategories():
         return db.categories.copy()
     
     def getCategoriesAndFields():
         return db.categoriesAndFields.copy()
+    
+    def getrevCategoryAndField():
+        return db.revCategoryAndField.copy()
 
 
     def addCategory(category):
@@ -33,6 +39,7 @@ class dbAdmin:
             result=cursor.fetchone()
             cursor.close()
             db.categories[category]=result[0]
+            db.categoriesAndFields[category]={}
 
     def removeCategory(category):
         with ConnPool.getConn() as conn:
@@ -43,12 +50,13 @@ class dbAdmin:
 
             db.categories.pop(category,0)
             db.categoriesAndFields.pop(category,0)
-            for id,(cat,field) in db.revCategoryAndField.copy().items():
+            for id,(cat,field,dataTypeId) in db.revCategoryAndField.copy().items():
                 if cat==category:
                     db.revCategoryAndField.pop(id,0)
 
     def addField(category,field,dataTypeId):
         with ConnPool.getConn() as conn:
+            dataTypeId=int(dataTypeId)
             cursor = conn.cursor()
             if category not in db.categories:
                 raise Exception("Category does not exists")
@@ -64,6 +72,7 @@ class dbAdmin:
 
     def removeField(fieldId):
         with ConnPool.getConn() as conn:
+            fieldId=int(fieldId)
             cursor = conn.cursor()
             cursor.execute("DELETE FROM Field WHERE id=?",(fieldId,))
             conn.commit()
