@@ -46,11 +46,10 @@ class db:
         result=cursor.fetchall()
         for (id,name) in result:
             db.categories[name]=id
+            db.categoriesAndFields[name]={}
         cursor.execute("SELECT Field.id, Category.name AS category_name, Field.name, Field.dataTypeId FROM Field JOIN Category ON Field.categoryId = Category.id")
         result=cursor.fetchall()
         for (id,category,name,dataTypeId) in result:
-            if category not in db.categoriesAndFields:
-                db.categoriesAndFields[category]={}
             db.categoriesAndFields[category][name]=id
             db.revCategoryAndField[id]=(category,name,dataTypeId)
         cursor.close()
@@ -68,7 +67,7 @@ class db:
             name TEXT,
             dataTypeId INTEGER,
             UNIQUE (categoryId, name),
-            FOREIGN KEY (categoryId) REFERENCES Category(id)
+            FOREIGN KEY (categoryId) REFERENCES Category(id) ON DELETE CASCADE
         );
 
         CREATE TABLE IF NOT EXISTS Data(
@@ -77,13 +76,27 @@ class db:
             value BLOB,
             isPrivate INTEGER,
             PRIMARY KEY (userId, fieldId),
-            FOREIGN KEY (fieldId) REFERENCES Field(id)
+            FOREIGN KEY (fieldId) REFERENCES Field(id) ON DELETE CASCADE
         );
 
         CREATE INDEX IF NOT EXISTS idx_Data_user
         ON Data (userId);
         CREATE INDEX IF NOT EXISTS idx_Data_field
         ON Data (fieldId);
+        
+        CREATE TRIGGER IF NOT EXISTS delete_field_rows
+        AFTER DELETE ON Category
+        FOR EACH ROW
+        BEGIN
+            DELETE FROM Field WHERE categoryId = OLD.id;
+        END;
+        
+        CREATE TRIGGER IF NOT EXISTS delete_data_rows
+        AFTER DELETE ON Field
+        FOR EACH ROW
+        BEGIN
+            DELETE FROM Data WHERE fieldId = OLD.id;
+        END;
         ''')
         conn.commit()
         cursor.close()
