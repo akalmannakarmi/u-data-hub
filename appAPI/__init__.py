@@ -2,7 +2,8 @@ from flask import Blueprint
 
 app = Blueprint('appAPI', __name__)
 
-from data import db
+from data import dbAPI as db
+
 from . import query
 
 def init(main):

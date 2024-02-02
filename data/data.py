@@ -1,8 +1,30 @@
+from threading import Lock
 import sqlite3
+
+class Conn(sqlite3.Connection):
+    def __exit__(self, __type, __value, __traceback):
+        ConnPool.release(self)
+        return super().__exit__(__type, __value, __traceback)
+
+class ConnPool:
+    _pool=[]
+    _lock=Lock()
+
+    def getConn():
+        with ConnPool._lock:
+            if not ConnPool._pool:
+                # print("new conn")
+                return Conn(db.name,check_same_thread=False)
+            else:
+                # print("reuse conn")
+                return ConnPool._pool.pop()
+    
+    def release(conn:Conn):
+        with ConnPool._lock:
+            ConnPool._pool.append(conn)
 
 class db:
     name="example.db"
-    conn = sqlite3.connect('example.db')
     dataTypes={
         1:"integer",
         2:"float",
@@ -14,11 +36,12 @@ class db:
     revCategoryAndField={}
 
     def init():
-        db.createTables()
-        db.loadData()
+        with ConnPool.getConn() as conn:
+            db.createTables(conn)
+            db.loadData(conn)
 
-    def loadData():
-        cursor = db.__conn.cursor()
+    def loadData(conn:sqlite3.Connection):
+        cursor = conn.cursor()
         cursor.execute("SELECT id,name FROM Category")
         result=cursor.fetchall()
         for (id,name) in result:
@@ -30,9 +53,10 @@ class db:
                 db.categoriesAndFields[category]={}
             db.categoriesAndFields[category][name]=id
             db.revCategoryAndField[id]=(category,name,dataTypeId)
+        cursor.close()
 
-    def createTables():
-        cursor = db.__conn.cursor()
+    def createTables(conn:sqlite3.Connection):
+        cursor = conn.cursor()
         cursor.executescript('''
         CREATE TABLE IF NOT EXISTS Category(
             id INTEGER PRIMARY KEY,
@@ -61,13 +85,13 @@ class db:
         CREATE INDEX IF NOT EXISTS idx_Data_field
         ON Data (fieldId);
         ''')
-        db.__conn.commit()
+        conn.commit()
         cursor.close()
 
 
 import struct
 
-def convertValue(fieldId,raw):
+def convertValue(fieldId,raw:bytes):
     cat,field,dataTypeId = db.revCategoryAndField[fieldId]
     if dataTypeId=="integer":
         return (cat,field,struct.unpack('>I', raw)[0])

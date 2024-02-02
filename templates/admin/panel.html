@@ -1,0 +1,20 @@
+{% extends '0Base.html' %} 
+{% block head %} {% endblock %} 
+{% block title %} FAQ {% endblock %} 
+{% block navBar %} {% endblock %} 
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-4">
+            <h3>Total Users:</h3><br>
+            {{noOfUsers}}
+        </div>
+        <div class="col-4">
+            <h3>Total Data Count:</h3><br>
+            {{noOfData}}
+        </div>
+
+    </div>
+</div>
+{% endblock %} 
+{% block foot %} {% endblock %}

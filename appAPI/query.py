@@ -3,7 +3,7 @@ from . import app,db
 
 
 @app.route('/getCategoryFields',methods=["POST"])
-def getStats():
+def getCategoryFields():
     if any(i not in request.form for i in ['authKey','fields']):
         return jsonify("Require:{authKey,fields}")
     
@@ -26,7 +26,7 @@ def getStats():
 
 
 @app.route('/getUserData',methods=["POST"])
-def getStats():
+def getUserData():
     if any(i not in request.form for i in ['authKey','userId','fields']):
         return jsonify("Require:{authKey,userId,fields}")
     

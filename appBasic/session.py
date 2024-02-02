@@ -62,6 +62,7 @@ def login():
     user = User.query.filter_by(username=data['username']).first()
     if user and user.password == data['password']:
         session['username'] = user.username
+        session['userId']=user.id
 
         login_user(user,remember=True)
         if request.args.get("next"):

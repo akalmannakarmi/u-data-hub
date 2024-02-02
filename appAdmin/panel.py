@@ -7,10 +7,10 @@ def adminPanel():
         return redirect('/')
     noOfUsers=db.noOfUsers()
     noOfData=db.noOfData()
-    return render_template('adminPanel.html',session=session,noOfData=noOfData,noOfUsers=noOfUsers)
+    return render_template('admin/panel.html',session=session,noOfData=noOfData,noOfUsers=noOfUsers)
 
 @app.route('/admin/addCategory',methods=["POST"])
-def adminPanel():
+def addCategory():
     if not db.isAdmin(session["userId"]):
         return redirect('/')
 
@@ -22,7 +22,7 @@ def adminPanel():
     return redirect('/adminPanel')
 
 @app.route('/admin/removeCategory',methods=["POST"])
-def adminPanel():
+def removeCategory():
     if not db.isAdmin(session["userId"]):
         return redirect('/')
     
@@ -35,7 +35,7 @@ def adminPanel():
 
 
 @app.route('/admin/addField',methods=["POST"])
-def adminPanel():
+def addField():
     if not db.isAdmin(session["userId"]):
         return redirect('/')
     
@@ -48,7 +48,7 @@ def adminPanel():
 
 
 @app.route('/admin/removeField',methods=["POST"])
-def adminPanel():
+def removeField():
     if not db.isAdmin(session["userId"]):
         return redirect('/')
     
