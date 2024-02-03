@@ -57,6 +57,11 @@ class db:
     def createTables(conn:sqlite3.Connection):
         cursor = conn.cursor()
         cursor.executescript('''
+        CREATE TABLE IF NOT EXISTS User(
+            id INTEGER PRIMARY KEY,
+            tag TEXT UNIQUE NOT NULL,
+            apiKey TEXT UNIQUE
+        );
         CREATE TABLE IF NOT EXISTS Category(
             id INTEGER PRIMARY KEY,
             name TEXT UNIQUE
@@ -69,20 +74,29 @@ class db:
             UNIQUE (categoryId, name),
             FOREIGN KEY (categoryId) REFERENCES Category(id) ON DELETE CASCADE
         );
-
         CREATE TABLE IF NOT EXISTS Data(
+            id INTEGER PRIMARY KEY,
             userId INTEGER,
             fieldId INTEGER,
             value BLOB,
             isPrivate INTEGER,
-            PRIMARY KEY (userId, fieldId),
+            UNIQUE (userId, fieldId),
             FOREIGN KEY (fieldId) REFERENCES Field(id) ON DELETE CASCADE
+        );
+        CREATE TABLE IF NOT EXISTS Shared(
+            dataId INTEGER,
+            userId INTEGER,
+            PRIMARY KEY (dataId,userId),
+            FOREIGN KEY (dataId) REFERENCES Data(id) ON DELETE CASCADE,
+            FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
         );
 
         CREATE INDEX IF NOT EXISTS idx_Data_user
         ON Data (userId);
         CREATE INDEX IF NOT EXISTS idx_Data_field
         ON Data (fieldId);
+        CREATE INDEX IF NOT EXISTS idx_User_apiKey
+        ON User (apiKey);
         
         CREATE TRIGGER IF NOT EXISTS delete_field_rows
         AFTER DELETE ON Category
@@ -96,6 +110,20 @@ class db:
         FOR EACH ROW
         BEGIN
             DELETE FROM Data WHERE fieldId = OLD.id;
+        END;
+        
+        CREATE TRIGGER IF NOT EXISTS delete_shared_rows
+        AFTER DELETE ON Data
+        FOR EACH ROW
+        BEGIN
+            DELETE FROM Shared WHERE dataId = OLD.id;
+        END;
+        
+        CREATE TRIGGER IF NOT EXISTS delete_shared2_rows
+        AFTER DELETE ON User
+        FOR EACH ROW
+        BEGIN
+            DELETE FROM Data WHERE userId = OLD.id;
         END;
         ''')
         conn.commit()

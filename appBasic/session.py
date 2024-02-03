@@ -1,7 +1,7 @@
 from flask import render_template,session,request,redirect,jsonify
 from flask_login import LoginManager,login_required,login_user,logout_user
 from flask_sqlalchemy import SQLAlchemy
-from . import app
+from . import app,dbBasic
 
 
 # Create database object
@@ -30,7 +30,7 @@ def signup():
         return render_template('basic/signup.html',rData={})
     
     data = request.form.deepcopy()
-    rq=['username','password']
+    rq=['username','userTag','password']
     if any(i not in data for i in rq):
         result = f"Require:{','.join(rq)}"
         return jsonify(result)
@@ -41,9 +41,9 @@ def signup():
         return render_template('basic/signup.html',rData=data,error="Password too long. Max 100")
 
     new_user = User(username=data['username'],password=data['password'])
-
     db.session.add(new_user)
     db.session.commit()
+    dbBasic.addUser(new_user.id,data['userTag'])
 
     return redirect('/login')
 
