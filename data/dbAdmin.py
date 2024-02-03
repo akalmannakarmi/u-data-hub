@@ -16,17 +16,17 @@ class dbAdmin:
             cursor.execute("SELECT COUNT(DISTINCT userId) FROM Data")
             cursor.close()
 
-    def dataTypes():
-        return db.dataTypes.copy()
+    def getDataTypes():
+        return db.dataTypes
 
     def getCategories():
-        return db.categories.copy()
+        return db.categories
     
     def getCategoriesAndFields():
-        return db.categoriesAndFields.copy()
+        return db.categoriesAndFields
     
     def getrevCategoryAndField():
-        return db.revCategoryAndField.copy()
+        return db.revCategoryAndField
 
 
     def addCategory(category):

@@ -19,36 +19,43 @@ class dbAPI:
             conn.commit()
             cursor.close()
 
+    def getDataTypes():
+        return db.dataTypes
 
+    def getCategories():
+        return db.categories
+    
     def getCategoriesAndFields():
-        return db.categoriesAndFields.copy()
+        return db.categoriesAndFields
     
-    def validAuth(authKey):
-        return True
+    def getrevCategoryAndField():
+        return db.revCategoryAndField
     
-    def getStats(fields):
+    def validAuth(apiKey):
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT id, value FROM Data WHERE isPrivate != 1 AND id IN ?", (tuple(fields),))
-            values = cursor.fetchall()
-            cursor.close()
-            result={}
-            for fieldId,raw in values:
-                category,field,value = convertValue(fieldId,raw)
-                result[category][field]=value
+            cursor.execute("SELECT * FROM User WHERE apiKey=?",(apiKey,))
+            if cursor.fetchall():
+                return True
+            return False
+    
+    def getStats(apiKey,fields):
+        with ConnPool.getConn() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))
+            dataIds=cursor.fetchall()
+            dataIds=[id[0] for id in dataIds]
+            cursor.execute("SELECT fieldId, value FROM Data WHERE fieldId IN ? AND (isPrivate !=1 OR id IN ?)", (tuple(fields),dataIds))
+            result = cursor.fetchall()
             return result
     
-    def getUserInfo(userId,authKey,fields):
-        if not authKey:
-            return
-        
+    def getUserInfo(userId,apiKey,fields):
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT fieldId, value, isPrivate FROM Data WHERE userId=?", (userId,))
-            values = cursor.fetchall()
-            cursor.close()
-            result={}
-            for fieldId,raw,isPrivate in values:
-                category,field,value = convertValue(fieldId,raw)
-                result[category][field]=(value,isPrivate==1)
+            cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))
+            dataIds=cursor.fetchall()
+            dataIds=[id[0] for id in dataIds]
+            cursor.execute("""SELECT fieldId,value FROM Data WHERE
+                userId=? AND fieldId in ? AND (isPrivate NOT IN (1,2) OR id IN ?)""", (userId,tuple(fields),dataIds))
+            result = cursor.fetchall()
             return result

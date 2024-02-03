@@ -7,7 +7,7 @@ def adminPanel():
         return redirect('/')
     noOfUsers=db.noOfUsers()
     noOfData=db.noOfData()
-    dataTypes=db.dataTypes()
+    dataTypes=db.getDataTypes()
     categoriesAndFields=db.getCategoriesAndFields()
     revCategortyAndField=db.getrevCategoryAndField()
     return render_template('admin/panel.html',session=session,noOfData=noOfData,noOfUsers=noOfUsers,
