@@ -1,0 +1,20 @@
+{% extends '0Base.html' %} 
+{% block head %} {% endblock %} 
+{% block title %} FAQ {% endblock %} 
+{% block navBar %} {% endblock %} 
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <form action="/search" method="get">
+            <label for="find-name">Name</label>
+            <input type="text" id="find-name" name="q">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    {% for user in users %}
+        <div class="row">
+            {{user}}
+        </div>
+</div>
+{% endblock %} 
+{% block foot %} {% endblock %}

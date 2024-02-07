@@ -15,10 +15,11 @@ def myProfile():
     if 'userId' not in session:
         return redirect('/login')
     
+    categoriesAndFields = db.getCategoriesAndFields()
     userTag = db.getUserTag(session['userId'])
     userKey = db.getUserKey(session['userId'])
     userData = db.getMyData(session['userId'])
-    return render_template('myProfile.html',session=session,userTag=userTag,userKey=userKey,userData=userData)
+    return render_template('myProfile.html',categoriesAndFields=categoriesAndFields,session=session,userTag=userTag,userKey=userKey,userData=userData)
 
 @app.route('/myProfile/newKey',methods=["POST"])
 def newKey():

@@ -3,6 +3,6 @@ from . import app,db
 
 @app.route('/search',methods=["GET"])
 def search():
-    request.args
-    users=findUsers(request.args)
+    tag=request.args.get('q',"",str)
+    users=db.findUsers(tag)
     return render_template('search.html',session=session,users=users)

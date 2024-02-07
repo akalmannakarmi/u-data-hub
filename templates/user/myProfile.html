@@ -1,0 +1,25 @@
+{% extends '0Base.html' %} 
+{% block head %} {% endblock %} 
+{% block title %} My Profile|{{UserTag}} {% endblock %} 
+{% block navBar %} {% endblock %} 
+{% block body %}
+<div class="container mt-5">
+    <h3>@{{UserTag}}</h3>
+    <label for="userKey">User API Key</label>
+    <input type="password" id="userKey" value="{{userKey}}">
+    {% for category,fields in categoriesAndFields.items() %}
+        <div class="row">
+            <h3>{{category}}</h3>
+            {% for field, fieldId in fieldValues.items() %}
+                <label for="{{category}}-{{field}}">{{field}}</label>
+                <input type="text" id="{{category}}-{{field}}" name="{{field}}" value="{{userData[fieldId][0]}}">
+                <input type="radio" name="isPrivate" value="0" {% if userData[fieldId][1] == 0 %} checked {% endif %}>
+                <input type="radio" name="isPrivate" value="1" {% if userData[fieldId][1] == 1 %} checked {% endif %}>
+                <input type="radio" name="isPrivate" value="2" {% if userData[fieldId][1] == 2 %} checked {% endif %}>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %} 
+{% block foot %} {% endblock %}

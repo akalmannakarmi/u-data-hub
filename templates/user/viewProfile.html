@@ -1,0 +1,23 @@
+{% extends '0Base.html' %} 
+{% block head %} {% endblock %} 
+{% block title %} Profile|{{UserTag}} {% endblock %} 
+{% block navBar %} {% endblock %} 
+{% block body %}
+<div class="container mt-5">
+    <h3>@{{UserTag}}</h3>
+    {% for category,fieldValues in userData.items() %}
+        <div class="row">
+            <h3>{{category}}</h3>
+            {% for field, (value,isPrivate) in fieldValues.items() %}
+                <label for="{{category}}-{{field}}">{{field}}</label>
+                <input type="text" id="{{category}}-{{field}}" name="{{field}}" value="{{value}}">
+                <input type="radio" name="isPrivate" value="0" {% if isPrivate == 0 %} checked {% endif %}>
+                <input type="radio" name="isPrivate" value="1" {% if isPrivate == 0 %} checked {% endif %}>
+                <input type="radio" name="isPrivate" value="2" {% if isPrivate == 0 %} checked {% endif %}>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %} 
+{% block foot %} {% endblock %}

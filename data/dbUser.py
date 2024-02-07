@@ -34,7 +34,15 @@ class dbUser:
             result = cursor.fetchone()[0]
             cursor.close()
             return result
-
+        
+    def findUsers(tag):
+        with ConnPool.getConn() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT tag FROM User WHERE tag LIKE ?",(tag,))
+            result=cursor.fetchmany(50)
+            cursor.close()
+            return result
+    
     def getUserData(userId,userId2):
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
@@ -48,7 +56,7 @@ class dbUser:
             result={}
             for fieldId,raw,isPrivate in values:
                 category,field,value = convertValue(fieldId,raw)
-                result[category][field]=(value,isPrivate==1)
+                result[category][field]=(value,isPrivate)
             return result
     
     def getMyData(userId):
@@ -61,7 +69,7 @@ class dbUser:
             result={}
             for fieldId,raw,isPrivate in values:
                 category,field,value = convertValue(fieldId,raw)
-                result[category][field]=(value,isPrivate==1)
+                result[fieldId]=(value,isPrivate)
             return result
     
     def addInfo(userId,category,fieldValues,fieldPrivacy):
