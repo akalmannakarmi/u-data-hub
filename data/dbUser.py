@@ -30,7 +30,7 @@ class dbUser:
     def getUserKey(userId):
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT key FROM User WHERE id=?", (userId,))
+            cursor.execute("SELECT apiKey FROM User WHERE id=?", (userId,))
             result = cursor.fetchone()[0]
             cursor.close()
             return result
@@ -38,6 +38,7 @@ class dbUser:
     def findUsers(tag):
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
+            tag=f"%{tag}%"
             cursor.execute("SELECT tag FROM User WHERE tag LIKE ?",(tag,))
             result=cursor.fetchmany(50)
             cursor.close()
@@ -75,11 +76,11 @@ class dbUser:
     def addInfo(userId,category,fieldValues,fieldPrivacy):
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
-            q="INSERT INTO Data (userId,fieldId,valueId,isPrivate) VALUES (?,?,?)"
+            q="INSERT INTO Data (userId,fieldId,value,isPrivate) VALUES (?,?,?,?)"
 
             for field,value in fieldValues.items():
-                bvalue=toBlob(value)
                 fieldId=db.categoriesAndFields[category][field]
+                bvalue=toBlob(fieldId,value)
                 privacy = fieldPrivacy[field]
                 cursor.execute(q,(userId,fieldId,bvalue,privacy))
             

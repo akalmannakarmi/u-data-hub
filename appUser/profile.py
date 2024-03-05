@@ -8,7 +8,7 @@ def viewProfile(userTag):
         userData = db.getUserData(userId,0)
     else:
         userData = db.getUserData(userId,session['userId'])
-    return render_template('viewProfile.html',session=session,userTag=userTag,userData=userData)
+    return render_template('user/viewProfile.html',session=session,userTag=userTag,userData=userData)
 
 @app.route('/myProfile',methods=["GET"])
 def myProfile():
@@ -19,7 +19,7 @@ def myProfile():
     userTag = db.getUserTag(session['userId'])
     userKey = db.getUserKey(session['userId'])
     userData = db.getMyData(session['userId'])
-    return render_template('myProfile.html',categoriesAndFields=categoriesAndFields,session=session,userTag=userTag,userKey=userKey,userData=userData)
+    return render_template('user/myProfile.html',categoriesAndFields=categoriesAndFields,session=session,userTag=userTag,userKey=userKey,userData=userData)
 
 @app.route('/myProfile/newKey',methods=["POST"])
 def newKey():

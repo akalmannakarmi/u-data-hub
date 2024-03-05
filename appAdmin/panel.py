@@ -1,9 +1,9 @@
 from flask import render_template, session, request, redirect,jsonify
 from . import app,db
 
-@app.route('/admin/panel',methods=["GET"])
+@app.route('/panel',methods=["GET"])
 def adminPanel():
-    if not db.isAdmin(session["userId"]):
+    if session["userId"]!=0:
         return redirect('/')
     noOfUsers=db.noOfUsers()
     noOfData=db.noOfData()
@@ -13,9 +13,9 @@ def adminPanel():
     return render_template('admin/panel.html',session=session,noOfData=noOfData,noOfUsers=noOfUsers,
         categoriesAndFields=categoriesAndFields,dataTypes=dataTypes,revCategortyAndField=revCategortyAndField)
 
-@app.route('/admin/addCategory',methods=["POST"])
+@app.route('/addCategory',methods=["POST"])
 def addCategory():
-    if not db.isAdmin(session["userId"]):
+    if session["userId"]!=0:
         return redirect('/')
 
     if 'category' not in request.form:
@@ -25,9 +25,9 @@ def addCategory():
 
     return redirect('/admin/panel')
 
-@app.route('/admin/removeCategory',methods=["POST"])
+@app.route('/removeCategory',methods=["POST"])
 def removeCategory():
-    if not db.isAdmin(session["userId"]):
+    if session["userId"]!=0:
         return redirect('/')
     
     if 'category' not in request.form:
@@ -38,9 +38,9 @@ def removeCategory():
     return redirect('/admin/panel')
 
 
-@app.route('/admin/addField',methods=["POST"])
+@app.route('/addField',methods=["POST"])
 def addField():
-    if not db.isAdmin(session["userId"]):
+    if session["userId"]!=0:
         return redirect('/')
     
     if any(i not in request.form for i in ['category','field','dataType']):
@@ -51,9 +51,9 @@ def addField():
     return redirect('/admin/panel')
 
 
-@app.route('/admin/removeField',methods=["POST"])
+@app.route('/removeField',methods=["POST"])
 def removeField():
-    if not db.isAdmin(session["userId"]):
+    if session["userId"]!=0:
         return redirect('/')
     
     if 'field' not in request.form:

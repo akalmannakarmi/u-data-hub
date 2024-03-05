@@ -145,14 +145,15 @@ def convertValue(fieldId,raw:bytes):
     else:
         return (cat,field,raw)
 
-def toBlob(value):
-    if isinstance(value, int):
+def toBlob(fieldId,value):
+    cat,field,dataTypeId = db.revCategoryAndField[fieldId]
+    if dataTypeId=="integer":
         return value.to_bytes(4, 'big')
-    elif isinstance(value, float):
+    elif dataTypeId=="float":
         return struct.pack('>f', value)
-    elif isinstance(value, bool):
+    elif dataTypeId=="bool":
         return bytes([value])
-    elif isinstance(value, str):
+    elif dataTypeId=="string":
         return value.encode('utf-8')
     else:
         return value

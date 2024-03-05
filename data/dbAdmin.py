@@ -8,13 +8,17 @@ class dbAdmin:
         with ConnPool.getConn() as conn:
             cursor=conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM Data")
+            result=cursor.fetchone()[0]
             cursor.close()
+            return result
 
     def noOfUsers():
         with ConnPool.getConn() as conn:
             cursor=conn.cursor()
-            cursor.execute("SELECT COUNT(DISTINCT userId) FROM Data")
+            cursor.execute("SELECT COUNT(id) FROM User")
+            result=cursor.fetchone()[0]
             cursor.close()
+            return result
 
     def getDataTypes():
         return db.dataTypes

@@ -5,4 +5,4 @@ from . import app,db
 def search():
     tag=request.args.get('q',"",str)
     users=db.findUsers(tag)
-    return render_template('search.html',session=session,users=users)
+    return render_template('user/search.html',session=session,users=users)
