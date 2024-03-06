@@ -3,6 +3,6 @@
 [ ] Better Admin Panel
 [ ] Better Search Page
 [X] Hash Passwords
-[ ] Default Privacy
+[X] Default Privacy
 [ ] Use the API?
-[ ] Log
+[X] Log

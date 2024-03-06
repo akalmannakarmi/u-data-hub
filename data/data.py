@@ -1,3 +1,4 @@
+from .dbLogging import db_logger
 from threading import Lock
 import sqlite3
 
@@ -9,14 +10,15 @@ class Conn(sqlite3.Connection):
 class ConnPool:
     _pool=[]
     _lock=Lock()
+    conns=0
 
     def getConn():
         with ConnPool._lock:
             if not ConnPool._pool:
-                # print("new conn")
+                ConnPool.conns+=1
+                db_logger.info("Created new db Connection:%d",ConnPool.conns)
                 return Conn(db.name,check_same_thread=False)
             else:
-                # print("reuse conn")
                 return ConnPool._pool.pop()
     
     def release(conn:Conn):
@@ -24,7 +26,7 @@ class ConnPool:
             ConnPool._pool.append(conn)
 
 class db:
-    name="example.db"
+    name="instance/data.db"
     dataTypes={
         1:"integer",
         2:"float",
@@ -36,11 +38,13 @@ class db:
     revCategoryAndField={}
 
     def init():
+        db_logger.info("Initializing Database: %s",db.name)
         with ConnPool.getConn() as conn:
             db.createTables(conn)
             db.loadData(conn)
 
     def loadData(conn:sqlite3.Connection):
+        db_logger.info("Updating Structure")
         cursor = conn.cursor()
         cursor.execute("SELECT id,name FROM Category")
         result=cursor.fetchall()
@@ -55,6 +59,7 @@ class db:
         cursor.close()
 
     def createTables(conn:sqlite3.Connection):
+        db_logger.info("Creating Tables")
         cursor = conn.cursor()
         cursor.executescript('''
         CREATE TABLE IF NOT EXISTS User(

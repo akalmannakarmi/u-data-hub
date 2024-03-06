@@ -19,8 +19,6 @@ def myProfile():
     userTag = db.getUserTag(session['userId'])
     userKey = db.getUserKey(session['userId'])
     userData = db.getMyData(session['userId'])
-    print(userData)
-    print(categoriesAndFields)
     return render_template('user/myProfile.html',categoriesAndFields=categoriesAndFields,session=session,userTag=userTag,userKey=userKey,userData=userData)
 
 @app.route('/myProfile/newKey',methods=["POST"])

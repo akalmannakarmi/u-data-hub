@@ -1,8 +1,9 @@
-from .data import ConnPool
+from .data import ConnPool,db_logger
 from . import dbAPI
 
 class dbBasic:
     def addUser(userId,userTag):
+        db_logger.info("Creating User:%s",userTag)
         key = dbAPI.generateKey()
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()

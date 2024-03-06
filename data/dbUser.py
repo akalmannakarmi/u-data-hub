@@ -1,4 +1,4 @@
-from .data import db,ConnPool,convertValue,toBlob
+from .data import db,ConnPool,convertValue,toBlob,db_logger
 from . import dbAPI
 
 class dbUser:
@@ -10,32 +10,36 @@ class dbUser:
     
     def getCategoriesAndFields():
         return db.categoriesAndFields
-    
+
     def getUserId(userTag):
+        db_logger.info("Getting User Id: %s",userTag)
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT id FROM User WHERE tag=?", (userTag,))
             result = cursor.fetchone()[0]
             cursor.close()
             return result
-    
+
     def getUserTag(userId):
+        db_logger.info("Getting User Tag: %d",userId)
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT tag FROM User WHERE id=?", (userId,))
             result = cursor.fetchone()[0]
             cursor.close()
             return result
-    
+
     def getUserKey(userId):
+        db_logger.info("Getting UserKey: %d",userId)
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT apiKey FROM User WHERE id=?", (userId,))
             result = cursor.fetchone()[0]
             cursor.close()
             return result
-        
+
     def findUsers(tag):
+        db_logger.info("Searching users: %s",tag)
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             tag=f"%{tag}%"
@@ -43,8 +47,9 @@ class dbUser:
             result=cursor.fetchmany(50)
             cursor.close()
             return result
-    
+
     def getUserData(userId,userId2):
+        db_logger.info("Getting UserData: %d->%d",userId,userId2)
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT dataId FROM Shared WHERE userId=?",(userId2,))
@@ -59,8 +64,9 @@ class dbUser:
                 category,field,value = convertValue(fieldId,raw)
                 result[category][field]=(value,isPrivate)
             return result
-    
+
     def getMyData(userId):
+        db_logger.info("Getting My data: %d",userId)
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT fieldId, value, isPrivate FROM Data WHERE userId=?", (userId,))
@@ -72,7 +78,7 @@ class dbUser:
                 category,field,value = convertValue(fieldId,raw)
                 result[fieldId]=(value,isPrivate)
             return result
-    
+
     def addInfo(userId,category,fieldValues,fieldPrivacy):
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
@@ -86,6 +92,7 @@ class dbUser:
             
             conn.commit()
             cursor.close()
+        db_logger.info("Added Info: %d->%s",userId,category)
 
     def editInfo(userId,category,fieldValues,fieldPrivacy):
         with ConnPool.getConn() as conn:
@@ -101,7 +108,8 @@ class dbUser:
             
             conn.commit()
             cursor.close()
-        
+        db_logger.info("Edit Info: %d->%s",userId,category)
+
     
     def removeInfo(userId,category,keys):
         with ConnPool.getConn() as conn:
@@ -115,3 +123,4 @@ class dbUser:
             
             conn.commit()
             cursor.close()
+        db_logger.info("Remove Info: %d->%s",userId,category)

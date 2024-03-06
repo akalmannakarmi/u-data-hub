@@ -28,8 +28,8 @@
                 <h4>{{field}} ({{dataTypes[revCategortyAndField[fieldId][2]]}})
                     --Default Privacy: 
                     {% if defaultPrivacy == 0 %} Public {% endif %}
-                    {% if defaultPrivacy == 0 %} Private {% endif %}
-                    {% if defaultPrivacy == 0 %} Anonymous {% endif %}
+                    {% if defaultPrivacy == 1 %} Private {% endif %}
+                    {% if defaultPrivacy == 2 %} Anonymous {% endif %}
                     <input type="text" name="field" value="{{fieldId}}" hidden>
                     <button type="submit" name="category" value="{{category}}">Del</button>
                 </h4>

@@ -1,18 +1,21 @@
-from .data import db,ConnPool,convertValue
+from .data import db,ConnPool,convertValue,db_logger
 import secrets
 
 class dbAPI:
     def generateKey():
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
+
+            db_logger.info("Generating APIkey")
             while True:
                 key= secrets.token_hex(16)
                 cursor.execute("SELECT * FROM User WHERE apiKey=?",(key,))
                 if not cursor.fetchall():
                     return key
-        
+
     def changeKey(userId):
         key = dbAPI.generateKey()
+        db_logger.info("Changing Key for user:%d",userId)
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             cursor.execute("UPDATE User SET apiKey=? WHERE id=?", (key,userId))
@@ -32,6 +35,7 @@ class dbAPI:
         return db.revCategoryAndField
     
     def validAuth(apiKey):
+        db_logger.info("Validating APIkey")
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM User WHERE apiKey=?",(apiKey,))
@@ -40,6 +44,7 @@ class dbAPI:
             return False
     
     def getStats(apiKey,fields):
+        db_logger.info("API getting stats")
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))
@@ -50,6 +55,7 @@ class dbAPI:
             return result
     
     def getUserInfo(userId,apiKey,fields):
+        db_logger.info("API getting user Info")
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))

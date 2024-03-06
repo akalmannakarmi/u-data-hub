@@ -10,7 +10,7 @@
     {% for category,fields in categoriesAndFields.items() %}
         <div class="row">
             <h3>{{category}}</h3>
-            <form action="myProfile/{{category}}/{% if fields|length == 0 %}add{% else %}edit{% endif %}" method="post">
+            <form action="myProfile/{{category}}/add" method="post">
             {% for field, (fieldId,defaultPrivacy) in fields.items() %}
                 <label for="{{category}}-{{field}}">{{field}}</label>
                     {% if userData[fieldId] %}
@@ -23,7 +23,6 @@
                         <input type="radio" name="{{field}}p" value="0" {% if defaultPrivacy == 0 %} checked {% endif %}> Public
                         <input type="radio" name="{{field}}p" value="1" {% if defaultPrivacy == 1 %} checked {% endif %}> Private
                         <input type="radio" name="{{field}}p" value="2" {% if defaultPrivacy == 2 %} checked {% endif %}> Anonymous
-                        {{defaultPrivacy}}
                     {% endif %}
                     <br>
                 {% endfor %}

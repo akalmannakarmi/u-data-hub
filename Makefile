@@ -5,5 +5,8 @@ run:
 	python main.py
 
 clean:
-	rm example.db
-	rm instance/mydb.db
+	rm -r -f instance
+	rm -r -f logs
+
+clear:
+	rm -r -f logs

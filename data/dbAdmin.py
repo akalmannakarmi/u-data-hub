@@ -1,10 +1,11 @@
-from .data import db,ConnPool
+from .data import db,ConnPool,db_logger
 
 class dbAdmin:
     def isAdmin(userId):
         return True
 
     def noOfData():
+        db_logger.info("Calculating No of Data")
         with ConnPool.getConn() as conn:
             cursor=conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM Data")
@@ -13,6 +14,7 @@ class dbAdmin:
             return result
 
     def noOfUsers():
+        db_logger.info("Calculating No of Users")
         with ConnPool.getConn() as conn:
             cursor=conn.cursor()
             cursor.execute("SELECT COUNT(id) FROM User")
@@ -43,7 +45,8 @@ class dbAdmin:
             result=cursor.fetchone()
             cursor.close()
             db.categories[category]=result[0]
-            db.categoriesAndFields[category]={}
+        db.categoriesAndFields[category]={}
+        db_logger.info("Added Category: %s",category)
 
     def removeCategory(category):
         with ConnPool.getConn() as conn:
@@ -52,18 +55,21 @@ class dbAdmin:
             conn.commit()
             cursor.close()
 
-            db.categories.pop(category,0)
-            db.categoriesAndFields.pop(category,0)
-            for id,(cat,field,dataTypeId) in db.revCategoryAndField.copy().items():
-                if cat==category:
-                    db.revCategoryAndField.pop(id,0)
+        db.categories.pop(category,0)
+        db.categoriesAndFields.pop(category,0)
+        for id,(cat,field,dataTypeId) in db.revCategoryAndField.copy().items():
+            if cat==category:
+                db.revCategoryAndField.pop(id,0)
+        db_logger.info("Removed Category: %s",category)
 
     def addField(category,field,dataTypeId,privacy):
         with ConnPool.getConn() as conn:
             dataTypeId=int(dataTypeId)
             cursor = conn.cursor()
             if category not in db.categories:
+                db_logger.warn("Trying to add Field in a category that doesnt Exits: %s->%s",category,field)
                 raise Exception("Category does not exists")
+
             categoryId = db.categories[category]
             cursor.execute("INSERT INTO Field (categoryId,name,dataTypeId,defaultPrivacy) VALUES (?,?,?,?)",(categoryId,field,dataTypeId,privacy))
             conn.commit()
@@ -71,8 +77,10 @@ class dbAdmin:
             cursor.execute("SELECT id,defaultPrivacy FROM Field WHERE categoryId=? AND name=?",(categoryId,field))
             result = cursor.fetchone()
             cursor.close()
-            db.categoriesAndFields[category][field]=result
-            db.revCategoryAndField[result[0]]=(category,field,dataTypeId,result[1])
+        
+        db.categoriesAndFields[category][field]=result
+        db.revCategoryAndField[result[0]]=(category,field,dataTypeId,result[1])
+        db_logger.info("Added Field: %s->%s",category,field)
 
     def removeField(fieldId):
         with ConnPool.getConn() as conn:
@@ -82,7 +90,7 @@ class dbAdmin:
             conn.commit()
             cursor.close()
 
-            category,field,dataTypeId=db.revCategoryAndField[fieldId]
-            db.categoriesAndFields[category].pop(field,0)
-            db.revCategoryAndField.pop(fieldId,0)
-
+        category,field,dataTypeId,defaultPrivacy=db.revCategoryAndField[fieldId]
+        db.categoriesAndFields[category].pop(field,0)
+        db.revCategoryAndField.pop(fieldId,0)
+        db_logger.info("Added Field: %s->%s",category,field)
