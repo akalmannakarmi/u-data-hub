@@ -23,9 +23,13 @@
                     <button type="submit" name="category" value="{{category}}">Del</button>
                 </h2>
             </form>
-            {% for field, fieldId in fieldValue.items() %}
+            {% for field, (fieldId,defaultPrivacy) in fieldValue.items() %}
             <form action="/admin/removeField" method="post">
                 <h4>{{field}} ({{dataTypes[revCategortyAndField[fieldId][2]]}})
+                    --Default Privacy: 
+                    {% if defaultPrivacy == 0 %} Public {% endif %}
+                    {% if defaultPrivacy == 0 %} Private {% endif %}
+                    {% if defaultPrivacy == 0 %} Anonymous {% endif %}
                     <input type="text" name="field" value="{{fieldId}}" hidden>
                     <button type="submit" name="category" value="{{category}}">Del</button>
                 </h4>
@@ -40,6 +44,9 @@
                         <option value="{{id}}">{{type}}</option>
                         {% endfor %}
                     </select>
+                    <input type="radio" name="privacy" value="0"> Public
+                    <input type="radio" name="privacy" value="1"> Private
+                    <input type="radio" name="privacy" value="2"> Anonymous
                     <button type="submit" name="category" value="{{category}}">Add</button>
                 </h4>
             </form>

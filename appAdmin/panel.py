@@ -43,10 +43,10 @@ def addField():
     if session["userId"]!=0:
         return redirect('/')
     
-    if any(i not in request.form for i in ['category','field','dataType']):
+    if any(i not in request.form for i in ['category','field','dataType','privacy']):
         return jsonify("Require:{category,field,dataType}")
     
-    db.addField(request.form['category'],request.form['field'],request.form['dataType'])
+    db.addField(request.form['category'],request.form['field'],request.form['dataType'],request.form['privacy'])
 
     return redirect('/admin/panel')
 

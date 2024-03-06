@@ -10,19 +10,20 @@
     {% for category,fields in categoriesAndFields.items() %}
         <div class="row">
             <h3>{{category}}</h3>
-            <form action="myProfile/{{category}}/add" method="post">
-            {% for field, fieldId in fields.items() %}
+            <form action="myProfile/{{category}}/{% if fields|length == 0 %}add{% else %}edit{% endif %}" method="post">
+            {% for field, (fieldId,defaultPrivacy) in fields.items() %}
                 <label for="{{category}}-{{field}}">{{field}}</label>
                     {% if userData[fieldId] %}
                         <input type="text" id="{{category}}-{{field}}" name="{{field}}" value="{% if userData[fieldId][0] %}{{userData[fieldId][0]}}{% endif %}">
-                        <input type="radio" name="{{field}}p" value="0" {% if userData[fieldId][1] == 0 %} checked {% endif %}>
-                        <input type="radio" name="{{field}}p" value="1" {% if userData[fieldId][1] == 1 %} checked {% endif %}>
-                        <input type="radio" name="{{field}}p" value="2" {% if userData[fieldId][1] == 2 %} checked {% endif %}>
+                        <input type="radio" name="{{field}}p" value="0" {% if userData[fieldId][1] == 0 %} checked {% endif %}> Public
+                        <input type="radio" name="{{field}}p" value="1" {% if userData[fieldId][1] == 1 %} checked {% endif %}> Private
+                        <input type="radio" name="{{field}}p" value="2" {% if userData[fieldId][1] == 2 %} checked {% endif %}> Anonymous
                     {% else %}
                         <input type="text" id="{{category}}-{{field}}" name="{{field}}">
-                        <input type="radio" name="{{field}}p" value="0" checked>
-                        <input type="radio" name="{{field}}p" value="1">
-                        <input type="radio" name="{{field}}p" value="2">
+                        <input type="radio" name="{{field}}p" value="0" {% if defaultPrivacy == 0 %} checked {% endif %}> Public
+                        <input type="radio" name="{{field}}p" value="1" {% if defaultPrivacy == 1 %} checked {% endif %}> Private
+                        <input type="radio" name="{{field}}p" value="2" {% if defaultPrivacy == 2 %} checked {% endif %}> Anonymous
+                        {{defaultPrivacy}}
                     {% endif %}
                     <br>
                 {% endfor %}

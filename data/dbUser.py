@@ -79,7 +79,7 @@ class dbUser:
             q="INSERT INTO Data (userId,fieldId,value,isPrivate) VALUES (?,?,?,?)"
 
             for field,value in fieldValues.items():
-                fieldId=db.categoriesAndFields[category][field]
+                fieldId,defaultPrivacy=db.categoriesAndFields[category][field]
                 bvalue=toBlob(fieldId,value)
                 privacy = fieldPrivacy[field]
                 cursor.execute(q,(userId,fieldId,bvalue,privacy))
@@ -91,11 +91,11 @@ class dbUser:
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             
-            q="UPDATE Data SET value=? isPrivate=? WHERE userId=? AND fieldId=?"
+            q="UPDATE Data SET value=?, isPrivate=? WHERE userId=? AND fieldId=?"
 
             for field,value in fieldValues.items():
-                bvalue=toBlob(value)
-                fieldId=db.categoriesAndFields[category][field]
+                fieldId,defaultPrivacy=db.categoriesAndFields[category][field]
+                bvalue=toBlob(fieldId,value)
                 privacy=fieldPrivacy[field]
                 cursor.execute(q,(bvalue,privacy,userId,fieldId))
             
@@ -110,7 +110,7 @@ class dbUser:
             q="DELETE FROM Data WHERE userId=? AND fieldId IN ?"
             
             for field in keys:
-                fieldId=db.categoriesAndFields[category][field]
+                fieldId,defaultPrivacy=db.categoriesAndFields[category][field]
                 cursor.execute(q,(userId,fieldId))
             
             conn.commit()

@@ -58,21 +58,21 @@ class dbAdmin:
                 if cat==category:
                     db.revCategoryAndField.pop(id,0)
 
-    def addField(category,field,dataTypeId):
+    def addField(category,field,dataTypeId,privacy):
         with ConnPool.getConn() as conn:
             dataTypeId=int(dataTypeId)
             cursor = conn.cursor()
             if category not in db.categories:
                 raise Exception("Category does not exists")
             categoryId = db.categories[category]
-            cursor.execute("INSERT INTO Field (categoryId,name,dataTypeId) VALUES (?,?,?)",(categoryId,field,dataTypeId))
+            cursor.execute("INSERT INTO Field (categoryId,name,dataTypeId,defaultPrivacy) VALUES (?,?,?,?)",(categoryId,field,dataTypeId,privacy))
             conn.commit()
 
-            cursor.execute("SELECT id FROM Field WHERE categoryId=? AND name=?",(categoryId,field))
+            cursor.execute("SELECT id,defaultPrivacy FROM Field WHERE categoryId=? AND name=?",(categoryId,field))
             result = cursor.fetchone()
             cursor.close()
-            db.categoriesAndFields[category][field]=result[0]
-            db.revCategoryAndField[result[0]]=(category,field,dataTypeId)
+            db.categoriesAndFields[category][field]=result
+            db.revCategoryAndField[result[0]]=(category,field,dataTypeId,result[1])
 
     def removeField(fieldId):
         with ConnPool.getConn() as conn:

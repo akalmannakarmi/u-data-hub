@@ -47,11 +47,11 @@ class db:
         for (id,name) in result:
             db.categories[name]=id
             db.categoriesAndFields[name]={}
-        cursor.execute("SELECT Field.id, Category.name AS category_name, Field.name, Field.dataTypeId FROM Field JOIN Category ON Field.categoryId = Category.id")
+        cursor.execute("SELECT Field.id, Category.name AS category_name, Field.name, Field.dataTypeId, Field.defaultPrivacy FROM Field JOIN Category ON Field.categoryId = Category.id")
         result=cursor.fetchall()
-        for (id,category,name,dataTypeId) in result:
-            db.categoriesAndFields[category][name]=id
-            db.revCategoryAndField[id]=(category,name,dataTypeId)
+        for (id,category,name,dataTypeId,defaultPrivacy) in result:
+            db.categoriesAndFields[category][name]=(id,defaultPrivacy)
+            db.revCategoryAndField[id]=(category,name,dataTypeId,defaultPrivacy)
         cursor.close()
 
     def createTables(conn:sqlite3.Connection):
@@ -70,6 +70,7 @@ class db:
             id INTEGER PRIMARY KEY,
             categoryId INTEGER,
             name TEXT,
+            defaultPrivacy INTEGER,
             dataTypeId INTEGER,
             UNIQUE (categoryId, name),
             FOREIGN KEY (categoryId) REFERENCES Category(id) ON DELETE CASCADE
@@ -133,7 +134,7 @@ class db:
 import struct
 
 def convertValue(fieldId,raw:bytes):
-    cat,field,dataTypeId = db.revCategoryAndField[fieldId]
+    cat,field,dataTypeId,defaultPrivacy = db.revCategoryAndField[fieldId]
     if dataTypeId=="integer":
         return (cat,field,struct.unpack('>I', raw)[0])
     elif dataTypeId=="float":
@@ -146,7 +147,7 @@ def convertValue(fieldId,raw:bytes):
         return (cat,field,raw)
 
 def toBlob(fieldId,value):
-    cat,field,dataTypeId = db.revCategoryAndField[fieldId]
+    cat,field,dataTypeId,defaultPrivacy = db.revCategoryAndField[fieldId]
     if dataTypeId=="integer":
         return value.to_bytes(4, 'big')
     elif dataTypeId=="float":

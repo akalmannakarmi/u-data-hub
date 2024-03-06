@@ -5,3 +5,4 @@
 [X] Hash Passwords
 [ ] Default Privacy
 [ ] Use the API?
+[ ] Log
