@@ -7,5 +7,5 @@
 [ ] Use the API?
 [X] Log
 [X] Auto Insert
-[ ] API Regen
+[X] APIKey Regen + hid/show Key
 [ ] Alter Field

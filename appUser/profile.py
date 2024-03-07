@@ -21,7 +21,7 @@ def myProfile():
     userData = db.getMyData(session['userId'])
     return render_template('user/myProfile.html',categoriesAndFields=categoriesAndFields,session=session,userTag=userTag,userKey=userKey,userData=userData)
 
-@app.route('/myProfile/newKey',methods=["POST"])
+@app.route('/myProfile/newKey',methods=["GET"])
 def newKey():
     if 'userId' not in session:
         return redirect('/login')
