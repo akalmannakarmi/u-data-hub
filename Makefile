@@ -1,6 +1,9 @@
 install:
 	pip install -r requirements.txt
 
+add:
+	python insert.py
+
 run:
 	python main.py
 

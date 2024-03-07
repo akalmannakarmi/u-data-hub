@@ -53,7 +53,6 @@ def login():
         return render_template('basic/login.html',rData={})
     
     data = request.form.deepcopy()
-    print(data)
     rq=['username','password']
     if any(i not in data for i in rq):
         result = f"Require:{','.join(rq)}"

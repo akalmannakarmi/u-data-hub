@@ -6,3 +6,6 @@
 [X] Default Privacy
 [ ] Use the API?
 [X] Log
+[X] Auto Insert
+[ ] API Regen
+[ ] Alter Field

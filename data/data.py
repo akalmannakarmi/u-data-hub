@@ -1,5 +1,6 @@
 from .dbLogging import db_logger
 from threading import Lock
+from enum import Enum
 import sqlite3
 
 class Conn(sqlite3.Connection):
@@ -25,13 +26,20 @@ class ConnPool:
         with ConnPool._lock:
             ConnPool._pool.append(conn)
 
+dataTypes={
+    "String":1,
+    "Float":2,
+    "Bool":3,
+    "Integer":4
+}
+
 class db:
     name="instance/data.db"
     dataTypes={
-        1:"integer",
+        1:"string",
         2:"float",
         3:"bool",
-        4:"string"
+        4:"integer"
     }
     categories={}
     categoriesAndFields={}
