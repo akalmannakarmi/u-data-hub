@@ -8,4 +8,4 @@
 [X] Log
 [X] Auto Insert
 [X] APIKey Regen + hid/show Key
-[ ] Alter Field
+[X] Alter Field

@@ -38,27 +38,50 @@ def removeCategory():
     return redirect('/admin/panel')
 
 
+@app.route('/editCategory',methods=["POST"])
+def editCategory():
+    if session["userId"]!=0:
+        return redirect('/')
+    
+    if any(i not in request.form for i in ['category','oldCategory']):
+        return jsonify("Require:{category,oldCategory}")
+    
+    db.editCategory(request.form['category'],request.form['oldCategory'])
+
+    return redirect('/admin/panel')
+
+
 @app.route('/addField',methods=["POST"])
 def addField():
     if session["userId"]!=0:
         return redirect('/')
     
     if any(i not in request.form for i in ['category','field','dataType','privacy']):
-        return jsonify("Require:{category,field,dataType}")
+        return jsonify("Require:{category,field,dataType,privacy}")
     
     db.addField(request.form['category'],request.form['field'],request.form['dataType'],request.form['privacy'])
 
     return redirect('/admin/panel')
 
 
-@app.route('/removeField',methods=["POST"])
-def removeField():
+@app.route('/removeField/<fieldId>',methods=["GET"])
+def removeField(fieldId):
     if session["userId"]!=0:
         return redirect('/')
     
-    if 'field' not in request.form:
-        return jsonify("Require:{field}")
+    db.removeField(int(fieldId))
+
+    return redirect('/admin/panel')
+
+
+@app.route('/editField/<fieldId>',methods=["POST"])
+def editField(fieldId):
+    if session["userId"]!=0:
+        return redirect('/')
     
-    db.removeField(request.form['field'])
+    if any(i not in request.form for i in ['field','dataType','privacy']):
+        return jsonify("Require:{field,dataType,privacy}")
+    
+    db.editField(int(fieldId),request.form['field'],int(request.form['dataType']),int(request.form['privacy']))
 
     return redirect('/admin/panel')

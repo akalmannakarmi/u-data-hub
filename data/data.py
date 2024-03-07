@@ -56,11 +56,14 @@ class db:
         cursor = conn.cursor()
         cursor.execute("SELECT id,name FROM Category")
         result=cursor.fetchall()
+        db.categories={}
+        db.categoriesAndFields={}
         for (id,name) in result:
             db.categories[name]=id
             db.categoriesAndFields[name]={}
         cursor.execute("SELECT Field.id, Category.name AS category_name, Field.name, Field.dataTypeId, Field.defaultPrivacy FROM Field JOIN Category ON Field.categoryId = Category.id")
         result=cursor.fetchall()
+        db.revCategoryAndField={}
         for (id,category,name,dataTypeId,defaultPrivacy) in result:
             db.categoriesAndFields[category][name]=(id,defaultPrivacy)
             db.revCategoryAndField[id]=(category,name,dataTypeId,defaultPrivacy)

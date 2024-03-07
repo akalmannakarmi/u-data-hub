@@ -54,13 +54,19 @@ class dbAdmin:
             cursor.execute("DELETE FROM Category WHERE name=?",(category,))
             conn.commit()
             cursor.close()
-
-        db.categories.pop(category,0)
-        db.categoriesAndFields.pop(category,0)
-        for id,(cat,field,dataTypeId) in db.revCategoryAndField.copy().items():
-            if cat==category:
-                db.revCategoryAndField.pop(id,0)
+            db.loadData(conn)
+        
         db_logger.info("Removed Category: %s",category)
+    
+    def editCategory(category,oldCategory):
+        with ConnPool.getConn() as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE Category set name=? WHERE name=?",(category,oldCategory))
+            conn.commit()
+            cursor.close()
+            db.loadData(conn)
+        
+        db_logger.info("Updated Category: %s->%s",oldCategory,category)
 
     def addField(category,field,dataTypeId,privacy):
         with ConnPool.getConn() as conn:
@@ -73,13 +79,8 @@ class dbAdmin:
             categoryId = db.categories[category]
             cursor.execute("INSERT INTO Field (categoryId,name,dataTypeId,defaultPrivacy) VALUES (?,?,?,?)",(categoryId,field,dataTypeId,privacy))
             conn.commit()
-
-            cursor.execute("SELECT id,defaultPrivacy FROM Field WHERE categoryId=? AND name=?",(categoryId,field))
-            result = cursor.fetchone()
-            cursor.close()
+            db.loadData(conn)
         
-        db.categoriesAndFields[category][field]=result
-        db.revCategoryAndField[result[0]]=(category,field,dataTypeId,result[1])
         db_logger.info("Added Field: %s->%s",category,field)
 
     def removeField(fieldId):
@@ -90,7 +91,18 @@ class dbAdmin:
             conn.commit()
             cursor.close()
 
-        category,field,dataTypeId,defaultPrivacy=db.revCategoryAndField[fieldId]
+        category,field,*_=db.revCategoryAndField[fieldId]
         db.categoriesAndFields[category].pop(field,0)
         db.revCategoryAndField.pop(fieldId,0)
-        db_logger.info("Added Field: %s->%s",category,field)
+        db_logger.info("Removed Field: %s->%s",category,field)
+
+    def editField(fieldId,field,dataTypeId,privacy):
+        with ConnPool.getConn() as conn:
+            cursor = conn.cursor()
+
+            cursor.execute("UPDATE Field SET name=?, dataTypeId=? ,defaultPrivacy=? WHERE id=?",(field,dataTypeId,privacy,fieldId))
+            cursor.close()
+        
+            category,oldField,oldDataTypeId,oldPrivacy=db.revCategoryAndField[fieldId]
+            db.loadData(conn)
+            db_logger.info("Updated Field: (%s,%s,%d.%d)->(%s,%s,%d.%d)",category,oldField,oldDataTypeId,oldPrivacy,category,field,dataTypeId,privacy)
