@@ -49,11 +49,17 @@ class dbAPI:
             cursor = conn.cursor()
             cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))
             dataIds=cursor.fetchall()
-            dataIds=[id[0] for id in dataIds]
-
+            dataIds=(id[0] for id in dataIds)
+            
             fp = ','.join(['?' for _ in fields])
             dp = ','.join(['?' for _ in dataIds])
-            cursor.execute(f"SELECT fieldId, value FROM Data WHERE fieldId IN ({fp}) AND (isPrivate !=1 OR id IN ({dp}))", (tuple(fields),dataIds))
+            if dp:
+                cursor.execute(f"SELECT fieldId, value FROM Data WHERE fieldId IN ({fp}) AND (isPrivate !=1 OR id IN ({dp}))", (*fields,dataIds))
+            else:
+                print(fp)
+                print(fields)
+                cursor.execute(f"SELECT fieldId, value FROM Data WHERE fieldId IN ({fp}) AND isPrivate !=1", fields)
+                
             result = cursor.fetchall()
             return result
     
@@ -63,11 +69,16 @@ class dbAPI:
             cursor = conn.cursor()
             cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))
             dataIds=cursor.fetchall()
-            dataIds=[id[0] for id in dataIds]
+            dataIds=(id[0] for id in dataIds)
 
             fp = ','.join(['?' for _ in fields])
             dp = ','.join(['?' for _ in dataIds])
-            cursor.execute(f"""SELECT fieldId,value FROM Data WHERE
-                userId=? AND fieldId in ({fp}) AND (isPrivate NOT IN (1,2) OR id IN ({dp}))""", (userId,tuple(fields),dataIds))
+            if dp:
+                cursor.execute(f"""SELECT fieldId,value FROM Data WHERE
+                    userId=? AND fieldId in ({fp}) AND (isPrivate NOT IN (1,2) OR id IN ({dp}))""", (userId,*fields,dataIds))
+            else:
+                cursor.execute(f"""SELECT fieldId,value FROM Data WHERE
+                    userId=? AND fieldId in ({fp}) AND isPrivate NOT IN (1,2)""", (userId,*fields))
+
             result = cursor.fetchall()
             return result

@@ -49,8 +49,8 @@ def getStats():
     
     if not db.validAuth(request.form['apiKey']):
         return jsonify({"Error":"Invalid Key"})
-    
-    data = db.getStats(request.form['apiKey'],request.form['fields'])
+    print(request.form)
+    data = db.getStats(request.form['apiKey'],request.form.getlist('fields'))
     
     return jsonify(data)
 
@@ -63,6 +63,6 @@ def getUserData():
     if not db.validAuth(request.form['apiKey']):
         return jsonify({"Error":"Invalid Key"})
     
-    data = db.getUserInfo(request.form['userId'],request.form['apiKey'],request.form['fields'])
+    data = db.getUserInfo(request.form['userId'],request.form['apiKey'],request.form.getlist('fields'))
     
-    return render_template('viewProfile.html',session=session,data=data)
+    return jsonify(data)
