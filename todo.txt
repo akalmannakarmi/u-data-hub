@@ -4,8 +4,10 @@
 [ ] Better Search Page
 [X] Hash Passwords
 [X] Default Privacy
-[ ] Use the API?
+[X] Use the API?
 [X] Log
 [X] Auto Insert
 [X] APIKey Regen + hid/show Key
 [X] Alter Field
+[ ] Authentication
+[ ] Sharing

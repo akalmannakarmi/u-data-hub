@@ -50,7 +50,10 @@ class dbAPI:
             cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))
             dataIds=cursor.fetchall()
             dataIds=[id[0] for id in dataIds]
-            cursor.execute("SELECT fieldId, value FROM Data WHERE fieldId IN ? AND (isPrivate !=1 OR id IN ?)", (tuple(fields),dataIds))
+
+            fp = ','.join(['?' for _ in fields])
+            dp = ','.join(['?' for _ in dataIds])
+            cursor.execute(f"SELECT fieldId, value FROM Data WHERE fieldId IN ({fp}) AND (isPrivate !=1 OR id IN ({dp}))", (tuple(fields),dataIds))
             result = cursor.fetchall()
             return result
     
@@ -61,7 +64,10 @@ class dbAPI:
             cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))
             dataIds=cursor.fetchall()
             dataIds=[id[0] for id in dataIds]
-            cursor.execute("""SELECT fieldId,value FROM Data WHERE
-                userId=? AND fieldId in ? AND (isPrivate NOT IN (1,2) OR id IN ?)""", (userId,tuple(fields),dataIds))
+
+            fp = ','.join(['?' for _ in fields])
+            dp = ','.join(['?' for _ in dataIds])
+            cursor.execute(f"""SELECT fieldId,value FROM Data WHERE
+                userId=? AND fieldId in ({fp}) AND (isPrivate NOT IN (1,2) OR id IN ({dp}))""", (userId,tuple(fields),dataIds))
             result = cursor.fetchall()
             return result
