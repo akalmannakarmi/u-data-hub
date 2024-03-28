@@ -1,3 +1,4 @@
+{% set page = "login" %}
 {% extends '0Base.html' %} 
 {% block head %}
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -14,13 +15,13 @@
         <h1 class="text-center">Log in</h1>
         <div class="card shadow rounded border border-2 border-dark">
             <div class="card-body mt-4 mx-auto px-5">
-                <form class="contact-form" action="/login" method="post">
+                <form class="contact-form" action="./login" method="post">
                     <label for="username" class="text-dark">Username</label>
                     <input type="username" class="form-control" id="username" placeholder="Enter username" name="username" value="{{rData['username']}}">
                     <br>
                     <label for="password" class="text-dark">Password</label>
                     <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" value="{{rData['password']}}">
-                    <a href="/signup">signup instead?</a>
+                    <a href="./signup">signup instead?</a>
                     <br>
                     {% if error %}
                         <div class="alert alert-danger d-flex align-items-center" role="alert" id="failed-alert">
@@ -39,5 +40,5 @@
 {% endblock %} 
 {% block foot %} 
 
-<script src="{{ url_for('static',filename='js/unloadError.js') }}"> </script> 
+<script src="../static/js/unloadError.js"> </script> 
 {% endblock %}

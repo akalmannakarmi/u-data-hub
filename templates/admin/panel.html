@@ -1,7 +1,6 @@
+{% set page = "panel" %}
 {% extends '0Base.html' %} 
-{% block head %} {% endblock %} 
 {% block title %} FAQ {% endblock %} 
-{% block navBar %} {% endblock %} 
 {% block body %}
 <div class="container mt-5">
     <div class="row justify-content-around">
@@ -19,15 +18,15 @@
         {% for category,fieldValue in categoriesAndFields.items() %}
         <div class="row">
             <h3 class="my-3">
-                <form action="/admin/editCategory" method="post" class="d-inline">
+                <form action="./admin/editCategory" method="post" class="d-inline">
                     <input type="text" name="category" value="{{category}}">
                     <button type="submit" name="oldCategory" value="{{category}}">Update</button>
                 </form>
-                <form action="/admin/removeCategory" method="post" class="d-inline"><button name="category" value="{{category}}">Del</button></form>
+                <form action="./admin/removeCategory" method="post" class="d-inline"><button name="category" value="{{category}}">Del</button></form>
             </h3>
             {% for field, (fieldId,defaultPrivacy) in fieldValue.items() %}
             <h4>
-                <form action="/admin/editField/{{fieldId}}" method="post" class="d-inline">
+                <form action="./admin/editField/{{fieldId}}" method="post" class="d-inline">
                     <input type="text" name="field" value="{{field}}">
                     <label>dataType</label>
                     <select name="dataType">
@@ -40,10 +39,10 @@
                     <input type="radio" name="privacy" value="2" {% if defaultPrivacy == 2 %} checked {% endif %}> Anonymous
                     <button type="submit">update</button>
                 </form>
-                <a href="/admin/removeField/{{fieldId}}"><button>Del</button></a>
+                <a href="./admin/removeField/{{fieldId}}"><button>Del</button></a>
             </h4>
             {% endfor %}
-            <form action="/admin/addField" method="post">
+            <form action="./admin/addField" method="post">
                 <h4>
                     <input type="text" name="field">
                     <label for="newField-{{category}}">dataType</label>
@@ -62,7 +61,7 @@
         {% endfor %}
 
         <h3>
-            <form action="/admin/addCategory" method="post">
+            <form action="./admin/addCategory" method="post">
                 <input type="text" name="category">
                 <button type="submit">Add</button>
             </form>
@@ -70,4 +69,3 @@
     </div>
 </div>
 {% endblock %} 
-{% block foot %} {% endblock %}

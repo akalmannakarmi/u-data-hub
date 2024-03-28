@@ -1,7 +1,6 @@
-{% extends '0Base.html' %} 
-{% block head %} {% endblock %} 
+{% set page = "viewProfile" %}
+{% extends '0Base.html' %}
 {% block title %} Profile|{{UserTag}} {% endblock %} 
-{% block navBar %} {% endblock %} 
 {% block body %}
 <div class="container mt-5">
     <h3>@{{UserTag}}</h3>
@@ -19,5 +18,4 @@
     {% endfor %}
 
 </div>
-{% endblock %} 
-{% block foot %} {% endblock %}
+{% endblock %}

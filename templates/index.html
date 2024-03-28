@@ -1,46 +1,12 @@
+{% set page = "index" %}
 {% extends '0Base.html' %} 
 {% block head %} 
-	<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+	<link rel="stylesheet" href="./static/css/index.css">
 {% endblock %}
-{% block title %} Universal Data Hub {% endblock %} 
-{% block navBar %}
-
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark border-secondary border-bottom">
-    <div class="container-fluid">
-        <a href="#">
-            <img src="{{ url_for('static',filename='img/icon.png') }}" alt="navbar-logo" class="navbar-logo" width="20" />
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/search">search</a>
-                </li>
-                {% if session["userId"] == 0 %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/panel">panel</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/myProfile">My Profile</a>
-                </li>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-{% endblock %} {% block body %}
-<header class="container-fluid mt-5">
-	<div class="row my-5 justify-content-center">
+{% block title %} Universal Data Hub {% endblock %}
+{% block body %}
+<header class="container-fluid">
+	<div class="row justify-content-center">
 		<div class="col-lg-4 col-md-4 py-5" id="header-text">
 			<h1>Data Collection System</h1>
 			<p class="mt-3">Have a centralized data collection system made for any purpose u need. Connect
@@ -49,5 +15,7 @@
 		<div class="col-xl-6 col-lg-6 col-md-8" id="header-img">
 		</div>
 	</div>
-</header>{% endblock %} 
-{% block foot %}{% endblock %}
+</header>
+{% endblock %} 
+{% block foot %}
+{% endblock %}

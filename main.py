@@ -6,7 +6,7 @@ from appAdmin import app as APP_A,init as init_A
 from appAPI import app as APP_API,init as init_API
 import logging
 
-app = Flask(__name__)
+app = Flask(__name__,static_url_path='', static_folder='templates',template_folder='templates')
 app.secret_key = 'your-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
 logging.basicConfig(filename='logs/flask.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

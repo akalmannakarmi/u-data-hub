@@ -1,7 +1,6 @@
+{% set page = "myProfile" %}
 {% extends '0Base.html' %} 
-{% block head %} {% endblock %} 
-{% block title %} My Profile|{{userTag}} {% endblock %} 
-{% block navBar %} {% endblock %} 
+{% block title %} My Profile|{{userTag}} {% endblock %}
 {% block body %}
 <div class="container mt-5">
     <h3>@{{userTag}}</h3>
@@ -23,11 +22,11 @@
     <label for="userKey">User API Key</label>
     <input type="password" id="userKey" value="{{userKey}}">
     <button id="toggleButton" onclick="toggleKey()">Show Key</button>
-    <a href="myProfile/newKey"><button>New Key</button></a>
+    <a href="./myProfile/newKey"><button>New Key</button></a>
     {% for category,fields in categoriesAndFields.items() %}
         <div class="row">
             <h3>{{category}}</h3>
-            <form action="myProfile/{{category}}/add" method="post">
+            <form action="./myProfile/{{category}}/add" method="post">
             {% for field, (fieldId,defaultPrivacy) in fields.items() %}
                 <label for="{{category}}-{{field}}">{{field}}</label>
                     {% if userData[fieldId] %}
@@ -49,5 +48,4 @@
     {% endfor %}
 
 </div>
-{% endblock %} 
-{% block foot %} {% endblock %}
+{% endblock %}
