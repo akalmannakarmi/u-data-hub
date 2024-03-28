@@ -1,0 +1,13 @@
+#header-text{
+	margin-top: auto;
+	margin-bottom: auto;
+}
+#header-img{
+	min-height: 600px;
+	background-image: url("/static/img/headerimg.jpeg");
+    background-size: cover;
+    background-position: center;
+}
+header{
+	background-color: rgb(8, 8, 10);
+}

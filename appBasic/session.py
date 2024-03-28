@@ -59,7 +59,7 @@ def login():
         return jsonify(result)
     
     if data['username']=="admin":
-        if data['password']=="1234":
+        if data['password']=="qwe":
             session['userId']=0
             return redirect('/')
         return render_template('basic/login.html', rData=data,error="Invalid username or password")
