@@ -12,4 +12,8 @@
     background: linear-gradient(to bottom, #333333ea, #000000da);
     border-radius: 0 0 1em 1em;
 }
-  
+
+#navbarText.show{
+	padding: 10px;
+	background: var(--black1);
+}

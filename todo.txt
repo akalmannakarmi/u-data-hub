@@ -1,6 +1,7 @@
 [ ] Profile Page
 [X] Better Index Page
-[ ] Better Admin Panel
+[X] Better Admin Panel
+[X] Better MyProfile
 [ ] Better Search Page
 [X] Hash Passwords
 [X] Default Privacy

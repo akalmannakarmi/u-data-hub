@@ -1,4 +1,4 @@
-from .data import db,ConnPool,convertValue,toBlob,db_logger
+from .data import db,ConnPool,convertValue,toBlob,db_logger,sqlite3
 from . import dbAPI
 
 class dbUser:
@@ -79,37 +79,30 @@ class dbUser:
                 result[fieldId]=(value,isPrivate)
             return result
 
-    def addInfo(userId,category,fieldValues,fieldPrivacy):
+    def saveInfo(userId, category, fieldValues, fieldPrivacy):
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
-            q="INSERT INTO Data (userId,fieldId,value,isPrivate) VALUES (?,?,?,?)"
 
-            for field,value in fieldValues.items():
-                fieldId,defaultPrivacy=db.categoriesAndFields[category][field]
-                bvalue=toBlob(fieldId,value)
+            for field, value in fieldValues.items():
+                fieldId, defaultPrivacy = db.categoriesAndFields[category][field]
+                bvalue = toBlob(fieldId, value)
                 privacy = fieldPrivacy[field]
-                cursor.execute(q,(userId,fieldId,bvalue,privacy))
-            
+
+                if not value:
+                    # If value is empty, delete the record
+                    delete_query = "DELETE FROM Data WHERE userId = ? AND fieldId = ?"
+                    cursor.execute(delete_query, (userId, fieldId))
+                else:
+                    # Try to insert. If duplicate key detected, update the existing record.
+                    try:
+                        insert_query = "INSERT INTO Data (userId, fieldId, value, isPrivate) VALUES (?, ?, ?, ?)"
+                        cursor.execute(insert_query, (userId, fieldId, bvalue, privacy))
+                    except sqlite3.IntegrityError:
+                        update_query = "UPDATE Data SET value = ?, isPrivate = ? WHERE userId = ? AND fieldId = ?"
+                        cursor.execute(update_query, (bvalue, privacy, userId, fieldId))
             conn.commit()
             cursor.close()
-        db_logger.info("Added Info: %d->%s",userId,category)
-
-    def editInfo(userId,category,fieldValues,fieldPrivacy):
-        with ConnPool.getConn() as conn:
-            cursor = conn.cursor()
-            
-            q="UPDATE Data SET value=?, isPrivate=? WHERE userId=? AND fieldId=?"
-
-            for field,value in fieldValues.items():
-                fieldId,defaultPrivacy=db.categoriesAndFields[category][field]
-                bvalue=toBlob(fieldId,value)
-                privacy=fieldPrivacy[field]
-                cursor.execute(q,(bvalue,privacy,userId,fieldId))
-            
-            conn.commit()
-            cursor.close()
-        db_logger.info("Edit Info: %d->%s",userId,category)
-
+        db_logger.info("Saved Info: %d->%s", userId, category)
     
     def removeInfo(userId,category,keys):
         with ConnPool.getConn() as conn:

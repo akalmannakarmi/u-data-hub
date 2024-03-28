@@ -10,27 +10,40 @@ def viewProfile(userTag):
         userData = db.getUserData(userId,session['userId'])
     return render_template('user/viewProfile.html',session=session,userTag=userTag,userData=userData)
 
-@app.route('/myProfile',methods=["GET"])
-def myProfile():
-    if 'userId' not in session:
-        return redirect('/login')
-    
-    categoriesAndFields = db.getCategoriesAndFields()
-    userTag = db.getUserTag(session['userId'])
-    userKey = db.getUserKey(session['userId'])
-    userData = db.getMyData(session['userId'])
-    return render_template('user/myProfile.html',categoriesAndFields=categoriesAndFields,session=session,userTag=userTag,userKey=userKey,userData=userData)
-
 @app.route('/myProfile/newKey',methods=["GET"])
 def newKey():
     if 'userId' not in session:
         return redirect('/login')
     
     db.newKey(session['userId'])
-    return redirect('/myProfile')
+    return redirect('/myProfile/home')
 
-@app.route('/myProfile/<category>/add',methods=["POST"])
-def addFields(category):
+@app.route('/myProfile/home',methods=["GET"])
+def myProfile():
+    if 'userId' not in session:
+        return redirect('/login')
+    
+    categories = db.getCategories()
+    userTag = db.getUserTag(session['userId'])
+    userKey = db.getUserKey(session['userId'])
+    return render_template('user/myProfile.html',session=session,categories=categories,userTag=userTag,userKey=userKey,subpage="home")
+
+@app.route('/myProfile/<category>',methods=["GET"])
+def category(category):
+    if 'userId' not in session:
+        return redirect('/login')
+    
+    categoriesAndFields = db.getCategoriesAndFields()
+    if category not in categoriesAndFields:
+        return jsonify("Error:Invalid Category")
+    
+    categories = db.getCategories()
+    fieldValues=categoriesAndFields[category]
+    userData = db.getMyData(session['userId'])
+    return render_template('user/myCategory.html',session=session,category=category,subpage=category,categories=categories,fieldValues=fieldValues,userData=userData)
+
+@app.route('/myProfile/<category>/save',methods=["POST"])
+def saveFields(category):
     if 'userId' not in session:
         return redirect('/login')
 
@@ -43,28 +56,9 @@ def addFields(category):
     fieldValues = {key: value for key, value in data.items() if key in fields}
     fieldPrivacy = {key[:-1]: value for key, value in data.items() if key[:-1] in fields}
     
-    db.addInfo(session['userId'],category,fieldValues,fieldPrivacy)
+    db.saveInfo(session['userId'],category,fieldValues,fieldPrivacy)
 
-    return redirect('/myProfile')
-
-@app.route('/myProfile/<category>/edit',methods=["POST"])
-def editFields(category):
-    if 'userId' not in session:
-        return redirect('/login')
-
-    categoriesAndFields= db.getCategoriesAndFields()
-    if category not in categoriesAndFields:
-        return jsonify('Category Does not Exists')
-    
-    
-    data = request.form
-    fields = categoriesAndFields[category]
-    fieldValues = {key: value for key, value in data.items() if key in fields}
-    fieldPrivacy = {key[:-1]: value for key, value in data.items() if key[:-1] in fields}
-    
-    db.editInfo(session['userId'],category,fieldValues,fieldPrivacy)
-
-    return redirect('/myProfile')
+    return redirect('/myProfile/home')
 
 @app.route('/myProfile/<category>/remove',methods=["POST"])
 def removeFields(category):
@@ -82,4 +76,4 @@ def removeFields(category):
     
     db.removeInfo(session['userId'],category,fieldValues)
 
-    return redirect('/myProfile')
+    return redirect('/myProfile/home')

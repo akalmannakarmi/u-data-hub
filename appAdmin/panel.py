@@ -7,11 +7,37 @@ def adminPanel():
         return redirect('/')
     noOfUsers=db.noOfUsers()
     noOfData=db.noOfData()
+    return render_template('admin/panel.html',session=session,noOfData=noOfData,noOfUsers=noOfUsers)
+
+@app.route('/categories',methods=["GET"])
+def categories():
+    if session["userId"]!=0:
+        return redirect('/')
+    categories=db.getCategories()
+    return render_template('admin/categories.html',session=session,categories=categories)
+
+@app.route('/charts',methods=["GET"])
+def charts():
+    if session["userId"]!=0:
+        return redirect('/')
+    return render_template('admin/charts.html',session=session)
+
+@app.route('/category',methods=["POST"])
+def category():
+    if session["userId"]!=0:
+        return redirect('/')
+    
+    categories=db.getCategories()
+    if 'category' not in request.form:
+        return jsonify("Require:{category}")
+    if request.form['category'] not in categories:
+        return jsonify("Error:Invalid Category")
+    
     dataTypes=db.getDataTypes()
-    categoriesAndFields=db.getCategoriesAndFields()
+    categoriesAndFields = db.getCategoriesAndFields()
+    fieldValue = categoriesAndFields[request.form['category']]
     revCategortyAndField=db.getrevCategoryAndField()
-    return render_template('admin/panel.html',session=session,noOfData=noOfData,noOfUsers=noOfUsers,
-        categoriesAndFields=categoriesAndFields,dataTypes=dataTypes,revCategortyAndField=revCategortyAndField)
+    return render_template('admin/category.html',session=session,category=request.form['category'],fieldValue=fieldValue,dataTypes=dataTypes,revCategortyAndField=revCategortyAndField)
 
 @app.route('/addCategory',methods=["POST"])
 def addCategory():

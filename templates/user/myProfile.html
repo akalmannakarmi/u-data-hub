@@ -1,51 +1,53 @@
-{% set page = "myProfile" %}
+{% set page = "panel" %}
 {% extends '0Base.html' %} 
-{% block title %} My Profile|{{userTag}} {% endblock %}
-{% block body %}
-<div class="container mt-5">
-    <h3>@{{userTag}}</h3>
-    <script>
-        var hidden = true;
-        function toggleKey() {
-            var userKeyInput = document.getElementById("userKey");
-            var showKeyButton = document.getElementById("toggleButton");
-            if (hidden) {
-                userKeyInput.type = "text";
-                showKeyButton.textContent = "Hide Key";
-            } else {
-                userKeyInput.type = "password";
-                showKeyButton.textContent = "Show Key";
-            }
-            hidden = !hidden;
-        }
-    </script>
-    <label for="userKey">User API Key</label>
-    <input type="password" id="userKey" value="{{userKey}}">
-    <button id="toggleButton" onclick="toggleKey()">Show Key</button>
-    <a href="./myProfile/newKey"><button>New Key</button></a>
-    {% for category,fields in categoriesAndFields.items() %}
-        <div class="row">
-            <h3>{{category}}</h3>
-            <form action="./myProfile/{{category}}/add" method="post">
-            {% for field, (fieldId,defaultPrivacy) in fields.items() %}
-                <label for="{{category}}-{{field}}">{{field}}</label>
-                    {% if userData[fieldId] %}
-                        <input type="text" id="{{category}}-{{field}}" name="{{field}}" value="{% if userData[fieldId][0] %}{{userData[fieldId][0]}}{% endif %}">
-                        <input type="radio" name="{{field}}p" value="0" {% if userData[fieldId][1] == 0 %} checked {% endif %}> Public
-                        <input type="radio" name="{{field}}p" value="1" {% if userData[fieldId][1] == 1 %} checked {% endif %}> Private
-                        <input type="radio" name="{{field}}p" value="2" {% if userData[fieldId][1] == 2 %} checked {% endif %}> Anonymous
-                    {% else %}
-                        <input type="text" id="{{category}}-{{field}}" name="{{field}}">
-                        <input type="radio" name="{{field}}p" value="0" {% if defaultPrivacy == 0 %} checked {% endif %}> Public
-                        <input type="radio" name="{{field}}p" value="1" {% if defaultPrivacy == 1 %} checked {% endif %}> Private
-                        <input type="radio" name="{{field}}p" value="2" {% if defaultPrivacy == 2 %} checked {% endif %}> Anonymous
-                    {% endif %}
-                    <br>
-                {% endfor %}
-                <button type="submit">Save</button>
-            </form>
-        </div>
-    {% endfor %}
-
-</div>
+{% block head %} 
+<link rel="stylesheet" href="../static/css/myProfile.css">
 {% endblock %}
+{% block title %} Panel {% endblock %} 
+{% block body %}
+<main>
+	<div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav class="col-md-2 d-none d-md-block sidebar py-4" id="sidebar">
+        <h4 class="sidebar-sticky">
+          <ul class="nav flex-column">
+						<a class="nav-link {%if subpage=='home'%}active" aria-current="page{%endif%}" href="./home"><i class="fas fa-home"></i>Home</a>
+						{% for category in categories %}
+							<a class="nav-link {%if subpage==category%} active" aria-current="page{%endif%}" href="./{{category}}">{{category}}</a>
+						{% endfor %}
+          </ul>
+        </h4>
+      </nav>
+
+      <!-- Main content -->
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" id="main">
+        {% block main %}
+          <div class="container py-5">
+						<h3>@{{userTag}}</h3>
+						<script>
+								var hidden = true;
+								function toggleKey() {
+										var userKeyInput = document.getElementById("userKey");
+										var showKeyButton = document.getElementById("toggleButton");
+										if (hidden) {
+												userKeyInput.type = "text";
+												showKeyButton.textContent = "Hide Key";
+										} else {
+												userKeyInput.type = "password";
+												showKeyButton.textContent = "Show Key";
+										}
+										hidden = !hidden;
+								}
+						</script>
+						<label for="userKey">User API Key</label>
+						<input type="password" id="userKey" value="{{userKey}}">
+						<button id="toggleButton" onclick="toggleKey()">Show Key</button>
+						<a href="./newKey"><button>New Key</button></a>
+					</div>
+        {% endblock %}
+      </main>
+    </div>
+  </div>
+</main>
+{% endblock %} 
