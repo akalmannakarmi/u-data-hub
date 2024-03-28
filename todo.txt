@@ -1,5 +1,5 @@
 [ ] Profile Page
-[ ] Better Index Page
+[X] Better Index Page
 [ ] Better Admin Panel
 [ ] Better Search Page
 [X] Hash Passwords

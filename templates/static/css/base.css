@@ -1,4 +1,15 @@
+:root {
+	--black: rgb(8, 8, 10);
+	--black1: rgb(27, 27, 34);
+	--lblue: rgb(36, 71, 137);
+}
+
 .no-ul {
     text-decoration: none;
+}
+
+#base-nav{
+    background: linear-gradient(to bottom, #333333ea, #000000da);
+    border-radius: 0 0 1em 1em;
 }
   
