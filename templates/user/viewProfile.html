@@ -1,18 +1,20 @@
 {% set page = "viewProfile" %}
 {% extends '0Base.html' %}
-{% block title %} Profile|{{UserTag}} {% endblock %} 
+{% block title %} Profile|{{userTag}} {% endblock %} 
 {% block body %}
 <div class="container mt-5">
-    <h3>@{{UserTag}}</h3>
+    <h1>@{{userTag}}</h1>
     {% for category,fieldValues in userData.items() %}
-        <div class="row">
-            <h3>{{category}}</h3>
+        <div class="p-1">
+            <h1>{{category}}</h1>
             {% for field, (value,isPrivate) in fieldValues.items() %}
-                <label for="{{category}}-{{field}}">{{field}}</label>
-                <input type="text" id="{{category}}-{{field}}" name="{{field}}" value="{{value}}">
-                <input type="radio" name="isPrivate" value="0" {% if isPrivate == 0 %} checked {% endif %}>
-                <input type="radio" name="isPrivate" value="1" {% if isPrivate == 0 %} checked {% endif %}>
-                <input type="radio" name="isPrivate" value="2" {% if isPrivate == 0 %} checked {% endif %}>
+                <h5 class="p-1">
+                    <label for="{{category}}-{{field}}" class="col-2">{{field}}</label>
+                    <input type="text" id="{{category}}-{{field}}" name="{{field}}" value="{{value}}">
+                    {% if isPrivate == 0 %} Public {% endif %}
+                    {% if isPrivate == 1 %} Private {% endif %}
+                    {% if isPrivate == 2 %} Anonymous {% endif %}
+                </h5>
             {% endfor %}
         </div>
     {% endfor %}

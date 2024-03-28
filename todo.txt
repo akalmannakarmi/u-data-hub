@@ -1,8 +1,8 @@
-[ ] Profile Page
+[X] Profile Page
 [X] Better Index Page
 [X] Better Admin Panel
 [X] Better MyProfile
-[ ] Better Search Page
+[X] Better Search Page
 [X] Hash Passwords
 [X] Default Privacy
 [X] Use the API?

@@ -1,8 +1,11 @@
 from flask import render_template, session, request, redirect,jsonify
 from . import app,db
 
-@app.route('/profile/<userTag>',methods=["GET"])
+@app.route('/viewProfile/<userTag>',methods=["GET"])
 def viewProfile(userTag):
+    if 'userId' not in session:
+        return redirect('/login')
+    
     userId = db.getUserId(userTag)
     if userId == session['userId']:
         userData = db.getUserData(userId,0)

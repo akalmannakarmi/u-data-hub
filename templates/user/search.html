@@ -1,19 +1,34 @@
 {% set page = "search" %}
 {% extends '0Base.html' %} 
-{% block title %} FAQ {% endblock %} 
+{% block head %}
+<link rel="stylesheet" href="../static/css/search.css">
+{% endblock %} 
+{% block title %} Search {% endblock %} 
 {% block body %}
-<div class="container mt-5">
-    <div class="row">
-        <form action="./search" method="get">
-            <label for="find-name">Name</label>
-            <input type="text" id="find-name" name="q">
-            <button type="submit">Search</button>
-        </form>
-    </div>
-    {% for user in users %}
+<main class="container-fluid">
+    <div class="container">
         <div class="row">
-            {{user[0]}}
+            <form action="./search" method="get">
+                <label for="find-name">Name</label>
+                <input type="text" id="find-name" name="q">
+                <button type="submit">Search</button>
+            </form>
         </div>
-    {% endfor %}
-</div>
+        {% for user in users %}
+            <a class="no-ul p-1" href="./viewProfile/{{user[0]}}">
+                <div class="card bg-dark text-white demo">
+                    <div class="card-body row">
+                        <div class="col-lg-2 col-md-12">
+                            <img src="./static/img/pfp.png" alt="name gen icon" class="img-fluid"/>
+                        </div>
+                        <div class="col-md-7">
+                            <h5 class="card-title">{{user[0]}}</h5>
+                        <p class="card-text">Insert User bio here in near future plz. Thank you</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</main>
 {% endblock %}
