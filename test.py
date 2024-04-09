@@ -7,7 +7,5 @@ with open("file") as f:
 
 data["ahsld"]="usgaiud"
 
-dataStr=json.dumps(data)
-
 with open("file",'w') as f:
-	json.dump(data,f)
+	json.dump(data,f,indent=4)

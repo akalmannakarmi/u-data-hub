@@ -12,9 +12,11 @@
       <nav class="col-md-2 d-none d-md-block sidebar py-4" id="sidebar">
         <h4 class="sidebar-sticky">
           <ul class="nav flex-column">
-						<a class="nav-link {%if subpage=='home'%}active" aria-current="page{%endif%}" href="./home"><i class="fas fa-home"></i>Home</a>
+						<a class="nav-link text-white py-3 {%if subpage=='home'%}active" aria-current="page{%endif%}" href="./home"><i class="fas fa-home"></i>Home</a>
+						<a class="nav-link text-white py-3  {%if subpage=='shared'%}active" aria-current="page{%endif%}" href="./shared"><i class="fas fa-users"></i>Shared</a>
+						<a class="nav-link text-white py-3  {%if subpage=='request'%}active" aria-current="page{%endif%}" href="./request"><i class="fas fa-share-square"></i>Request</a>
 						{% for category in categories %}
-							<a class="nav-link {%if subpage==category%} active" aria-current="page{%endif%}" href="./{{category}}">{{category}}</a>
+							<a class="nav-link text-white py-3  {%if subpage==category%} active" aria-current="page{%endif%}" href="./{{category}}">{{category}}</a>
 						{% endfor %}
           </ul>
         </h4>
