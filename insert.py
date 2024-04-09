@@ -15,13 +15,13 @@ for category, fields in structure.items():
     try:
         dbAdmin.addCategory(category)
     except Exception as e:
-        # print(f"Failed to Add Category:{category} Error:{e}")
+        print(f"Failed to Add Category:{category} Error:{e}")
         pass
     for field,dataType in fields.items():
         try:
             dbAdmin.addField(category,field,dataTypes[dataType],0)
         except Exception as e:
-            # print(f"Failed to Add Field:{field} Error:{e}")
+            print(f"Failed to Add Field:{field} Error:{e}")
             pass
 
 userData = {}
@@ -34,7 +34,7 @@ for user,data in userData.items():
         cur.execute("INSERT INTO user (username,password,is_active) VALUES (?,?,?)",(user,hash_password(user),1))
         conn.commit()
     except Exception as e:
-        # print(f"Failed to add user:{user} Error:{e}")
+        print(f"Failed to add user:{user} Error:{e}")
         pass
     cur.execute("SELECT id FROM user WHERE username = ?",(user,))
     id_ = cur.fetchone()[0]
@@ -43,15 +43,15 @@ for user,data in userData.items():
     try:
         dbBasic.addUser(id_,user)
     except Exception as e:
-        # print(f"Failed to add User to data:{id_},{user} = {type(id_)},{type(user)}")
+        print(f"Failed to add User to data:{id_},{user} = {type(id_)},{type(user)}")
         pass
     
     for category,fieldData in data.items():
         fieldPrivacy = {k:0 for k in fieldData}
         try:
-            dbUser.addInfo(id_,category,fieldData,fieldPrivacy)
+            dbUser.saveInfo(id_,category,fieldData,fieldPrivacy)
         except Exception as e:
-            # print(f"Failed to add user data Error:{e}")
+            print(f"Failed to add user data Error:{e}")
             pass
 
 
