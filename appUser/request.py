@@ -6,7 +6,5 @@ def requeste():
     if 'userId' not in session:
         return redirect('/login')
     
-    categories = db.getCategories()
-    userTag = db.getUserTag(session['userId'])
-    userKey = db.getUserKey(session['userId'])
-    return render_template('user/myProfile.html',session=session,categories=categories,userTag=userTag,userKey=userKey,subpage="home")
+    categoriesAndFields = db.getCategoriesAndFields()
+    return render_template('user/myProfile.html',session=session,categoriesAndFields=categoriesAndFields)
