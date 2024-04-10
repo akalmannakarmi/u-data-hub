@@ -6,11 +6,11 @@ def viewProfile(userTag):
     if 'userId' not in session:
         return redirect('/login')
     
-    userId = db.getUserId(userTag)
-    if userId == session['userId']:
-        userData = db.getUserData(userId,0)
+    sharedId = db.getUserId(userTag)
+    if sharedId == session['userId']:
+        userData = db.getUserData(sharedId,0)
     else:
-        userData = db.getUserData(userId,session['userId'])
+        userData = db.getUserData(sharedId,session['userId'])
     return render_template('user/viewProfile.html',session=session,userTag=userTag,userData=userData)
 
 @app.route('/myProfile/newKey',methods=["GET"])

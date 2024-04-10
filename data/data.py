@@ -92,19 +92,20 @@ class db:
             FOREIGN KEY (categoryId) REFERENCES Category(id) ON DELETE CASCADE
         );
         CREATE TABLE IF NOT EXISTS Data(
-            id INTEGER PRIMARY KEY,
             userId INTEGER,
             fieldId INTEGER,
             value BLOB,
             isPrivate INTEGER,
-            UNIQUE (userId, fieldId),
+            PRIMARY KEY (userId, fieldId),
             FOREIGN KEY (fieldId) REFERENCES Field(id) ON DELETE CASCADE
         );
         CREATE TABLE IF NOT EXISTS Shared(
-            dataId INTEGER,
+            ownerId INTEGER,
+            fieldId INTEGER,
             userId INTEGER,
-            PRIMARY KEY (dataId,userId),
-            FOREIGN KEY (dataId) REFERENCES Data(id) ON DELETE CASCADE,
+            PRIMARY KEY (ownerId,fieldId,userId),
+            FOREIGN KEY (ownerId) REFERENCES User(id) ON DELETE CASCADE,
+            FOREIGN KEY (fieldId) REFERENCES Field(fieldId) ON DELETE CASCADE,
             FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
         );
 
@@ -114,6 +115,8 @@ class db:
         ON Data (fieldId);
         CREATE INDEX IF NOT EXISTS idx_User_apiKey
         ON User (apiKey);
+        CREATE INDEX IF NOT EXISTS idx_Shared_users
+        ON User (ownerId,userId);
         
         CREATE TRIGGER IF NOT EXISTS delete_field_rows
         AFTER DELETE ON Category
@@ -130,17 +133,10 @@ class db:
         END;
         
         CREATE TRIGGER IF NOT EXISTS delete_shared_rows
-        AFTER DELETE ON Data
-        FOR EACH ROW
-        BEGIN
-            DELETE FROM Shared WHERE dataId = OLD.id;
-        END;
-        
-        CREATE TRIGGER IF NOT EXISTS delete_shared2_rows
         AFTER DELETE ON User
         FOR EACH ROW
         BEGIN
-            DELETE FROM Data WHERE userId = OLD.id;
+            DELETE FROM Data WHERE userId = OLD.id OR ownerId = OLD.id ;
         END;
         ''')
         conn.commit()

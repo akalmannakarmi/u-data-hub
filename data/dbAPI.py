@@ -47,38 +47,38 @@ class dbAPI:
         db_logger.info("API getting stats")
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))
-            dataIds=cursor.fetchall()
-            dataIds=(id[0] for id in dataIds)
             
-            fp = ','.join(['?' for _ in fields])
-            dp = ','.join(['?' for _ in dataIds])
-            if dp:
-                cursor.execute(f"SELECT fieldId, value FROM Data WHERE fieldId IN ({fp}) AND (isPrivate !=1 OR id IN ({dp}))", (*fields,dataIds))
-            else:
-                print(fp)
-                print(fields)
-                cursor.execute(f"SELECT fieldId, value FROM Data WHERE fieldId IN ({fp}) AND isPrivate !=1", fields)
-                
+            cursor.execute("SELECT userId FROM User WHERE apiKey = ?",(apiKey,))
+            userId=cursor.fetchall()[0][0]
+            
+            p = ','.join(['?' for _ in fields])
+
+            cursor.execute(f"""\
+                SELECT Data.fieldId, Data.value
+                FROM Data
+                LEFT JOIN Shared ON Data.userId = Shared.ownerId AND Data.fieldId = Shared.fieldId
+                WHERE Data.fieldId IN {p} AND 
+                (Data.isPrivate != 1 OR (Data.isPrivate <> 0 AND Shared.userId = ?));
+                """,(*fields,userId))
+            
             result = cursor.fetchall()
             return result
     
-    def getUserInfo(userId,apiKey,fields):
+    def getUserInfo(sharedId,apiKey,fields):
         db_logger.info("API getting user Info")
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT Shared.dataId FROM User JOIN Shared ON User.id = Shared.userId WHERE User.apiKey = ?",(apiKey,))
-            dataIds=cursor.fetchall()
-            dataIds=(id[0] for id in dataIds)
+            cursor.execute("SELECT userId FROM User WHERE apiKey = ?",(apiKey,))
+            userId=cursor.fetchall()[0][0]
+            p = ','.join(['?' for _ in fields])
 
-            fp = ','.join(['?' for _ in fields])
-            dp = ','.join(['?' for _ in dataIds])
-            if dp:
-                cursor.execute(f"""SELECT fieldId,value FROM Data WHERE
-                    userId=? AND fieldId in ({fp}) AND (isPrivate NOT IN (1,2) OR id IN ({dp}))""", (userId,*fields,dataIds))
-            else:
-                cursor.execute(f"""SELECT fieldId,value FROM Data WHERE
-                    userId=? AND fieldId in ({fp}) AND isPrivate NOT IN (1,2)""", (userId,*fields))
-
+            cursor.execute(f"""\
+                SELECT Data.fieldId, Data.value
+                FROM Data
+                LEFT JOIN Shared ON Data.userId = Shared.ownerId AND Data.fieldId = Shared.fieldId
+                WHERE Data.userId = ? Data.fieldId IN {p} AND 
+                (Data.isPrivate = 0 OR (Data.isPrivate <> 0 AND Shared.userId = ?));
+                """,(sharedId,*fields,userId))
+            
             result = cursor.fetchall()
             return result

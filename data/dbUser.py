@@ -48,17 +48,17 @@ class dbUser:
             cursor.close()
             return result
 
-    def getUserData(userId, userId2):
-        db_logger.info("Getting UserData: %d->%d", userId, userId2)
+    def getUserData(sharedId, userId):
+        db_logger.info("Getting UserData: %d->%d", sharedId, userId)
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT dataId FROM Shared WHERE userId=?", (userId2,))
-            dataIds = cursor.fetchall()
-            dataIds = [id[0] for id in dataIds]
-            placeholders = ",".join("?" for _ in dataIds)
+            cursor.execute("SELECT fieldId FROM Shared WHERE ownerId=? AND userId=?", (sharedId,userId))
+            fieldIds = cursor.fetchall()
+            fieldIds = [id[0] for id in fieldIds]
+            placeholders = ",".join("?" for _ in fieldIds)
 
-            query = "SELECT fieldId, value, isPrivate FROM Data WHERE userId=? AND (isPrivate NOT IN (1,2) OR id IN ({placeholders}))".format(placeholders=placeholders)
-            cursor.execute(query, (userId, *dataIds))
+            query = "SELECT fieldId, value, isPrivate FROM Data WHERE userId=? AND (isPrivate NOT IN (1,2) OR fieldId IN ({placeholders}))".format(placeholders=placeholders)
+            cursor.execute(query, (sharedId, *fieldIds))
 
             values = cursor.fetchall()
             cursor.close()
@@ -109,6 +109,37 @@ class dbUser:
         db_logger.info("Saved Info: %d->%s", userId, category)
     
     def removeInfo(userId,category,keys):
+        with ConnPool.getConn() as conn:
+            cursor = conn.cursor()
+
+            q="DELETE FROM Data WHERE userId=? AND fieldId IN ?"
+            
+            for field in keys:
+                fieldId,defaultPrivacy=db.categoriesAndFields[category][field]
+                cursor.execute(q,(userId,fieldId))
+            
+            conn.commit()
+            cursor.close()
+        db_logger.info("Remove Info: %d->%s",userId,category)
+
+    def getShared(userId):
+        pass
+
+    def rmUserShared(userId,sharedUserId):
+        with ConnPool.getConn() as conn:
+            cursor = conn.cursor()
+
+            q="DELETE FROM Data WHERE userId=? AND fieldId IN ?"
+            
+            for field in keys:
+                fieldId,defaultPrivacy=db.categoriesAndFields[category][field]
+                cursor.execute(q,(userId,fieldId))
+            
+            conn.commit()
+            cursor.close()
+        db_logger.info("Remove Info: %d->%s",userId,category)
+
+    def rmShared(userId,fieldId):
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
 
