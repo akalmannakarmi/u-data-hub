@@ -8,7 +8,7 @@
 					<div class="col-md-6 col-sm-12 p-2">
 						<h3 class="pb-3"><input type="checkbox" name="category" value="{{category}}">&nbsp;&nbsp;{{category}}</input></h3>
 						{% for field, (fieldId,defaultPrivacy) in fieldValues.items() %}
-							<label class="px-3 d-block" for="{{fieldId}}"><input type="checkbox" name="field" value="{{fieldId}}" id="{{fieldId}}">&nbsp;&nbsp;&nbsp;{{field}}</label>
+							<label class="px-3 d-block" for="{{fieldId}}"><input type="checkbox" name="fields" value="{{fieldId}}" id="{{fieldId}}">&nbsp;&nbsp;&nbsp;{{field}}</label>
 						{% endfor %}
 					</div>
 				{% endfor %}

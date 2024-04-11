@@ -108,6 +108,10 @@ class db:
             FOREIGN KEY (fieldId) REFERENCES Field(fieldId) ON DELETE CASCADE,
             FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
         );
+        CREATE TABLE IF NOT EXISTS Requests(
+            id INTEGER PRIMARY KEY,
+            fieldIds BLOB UNIQUE
+        );
 
         CREATE INDEX IF NOT EXISTS idx_Data_user
         ON Data (userId);
