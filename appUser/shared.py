@@ -10,7 +10,7 @@ def shared():
 	shared = db.getShared(session['userId'])
 	return render_template('user/shared.html',session=session,shared=shared,subpage="shared",categories=categories)
 
-@app.route('/myProfile/shared/rmUser',methods=["POST"])
+@app.route('/myProfile/shared/rmUser',methods=["GET"])
 def rmUserShared():
 	if 'userId' not in session:
 		return redirect('/login')
@@ -22,7 +22,7 @@ def rmUserShared():
 
 	return redirect('/myProfile/shared')
 
-@app.route('/myProfile/shared/remove',methods=["POST"])
+@app.route('/myProfile/shared/remove',methods=["GET"])
 def removeShared():
 	if 'userId' not in session:
 		return redirect('/login')

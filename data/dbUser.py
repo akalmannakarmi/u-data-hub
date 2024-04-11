@@ -128,27 +128,28 @@ class dbUser:
             cursor = conn.cursor()
             cursor.execute("""\
                 SELECT 
-                    U.tag AS owner,
+                    U.id AS receiverId,
+                    U.tag AS receiver,
                     C.name AS category,
                     F.name AS field,
                     F.id AS fieldId
                 FROM 
                     Shared AS S
                 JOIN 
-                    User AS U ON S.ownerId = U.id
+                    User AS U ON S.userId = U.id
                 JOIN 
                     Field AS F ON S.fieldId = F.id
                 JOIN 
                     Category AS C ON F.categoryId = C.id
                 WHERE 
-                    S.userId = ?;
+                    S.ownerId = ?;
                 """,(userId,))
             
             tResult = cursor.fetchall()
             for row in tResult:
-                result.setdefault(row["owner"], {})
-                result[row["owner"]].setdefault(row["category"], [])
-                result[row["owner"]][row["category"]].append((row["field"],row["fieldId"]))
+                result.setdefault((row["receiverId"],row["receiver"]), {})
+                result[(row["receiverId"],row["receiver"])].setdefault(row["category"], [])
+                result[(row["receiverId"],row["receiver"])][row["category"]].append((row["field"],row["fieldId"]))
             cursor.close()
 
         db_logger.info("Got Shared Datas: %d",userId)
