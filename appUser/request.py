@@ -7,4 +7,5 @@ def requeste():
         return redirect('/login')
     
     categoriesAndFields = db.getCategoriesAndFields()
-    return render_template('user/myProfile.html',session=session,categoriesAndFields=categoriesAndFields)
+    categories=db.getCategories()
+    return render_template('user/request.html',session=session,categories=categories,categoriesAndFields=categoriesAndFields)

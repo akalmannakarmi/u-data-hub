@@ -2,26 +2,18 @@
 {% block subpage %} {% set subpage = "request" %} {% endblock %} 
 {% block main %}
 	<div class="container py-5">
-		<h3>{{category}}</h3>
-		<form action="./{{category}}/save" method="post">
-			{% for field, (fieldId,defaultPrivacy) in fieldValues.items() %}
-				<h5 class="p-1">
-					<label for="{{category}}-{{field}}" class="col-2">{{field}}</label>
-					{% if userData[fieldId] %}
-						<input type="text" id="{{category}}-{{field}}" name="{{field}}" value="{% if userData[fieldId][0] %}{{userData[fieldId][0]}}{% endif %}">
-						<input type="radio" name="{{field}}p" value="0" {% if userData[fieldId][1] == 0 %} checked {% endif %}> Public
-						<input type="radio" name="{{field}}p" value="1" {% if userData[fieldId][1] == 1 %} checked {% endif %}> Private
-						<input type="radio" name="{{field}}p" value="2" {% if userData[fieldId][1] == 2 %} checked {% endif %}> Anonymous
-					{% else %}
-						<input type="text" id="{{category}}-{{field}}" name="{{field}}">
-						<input type="radio" name="{{field}}p" value="0" {% if defaultPrivacy == 0 %} checked {% endif %}> Public
-						<input type="radio" name="{{field}}p" value="1" {% if defaultPrivacy == 1 %} checked {% endif %}> Private
-						<input type="radio" name="{{field}}p" value="2" {% if defaultPrivacy == 2 %} checked {% endif %}> Anonymous
-					{% endif %}
-				</h5>
-				<br>
-			{% endfor %}
-			<button type="submit" class="">Save</button>
+		<form action="./request" method="post">
+			<div class="row justify-content-around">
+				{% for category, fieldValues in categoriesAndFields.items() %}
+					<div class="col-md-6 col-sm-12 p-2">
+						<h3 class="pb-3"><input type="checkbox" name="category" value="{{category}}">&nbsp;&nbsp;{{category}}</input></h3>
+						{% for field, (fieldId,defaultPrivacy) in fieldValues.items() %}
+							<label class="px-3 d-block" for="{{fieldId}}"><input type="checkbox" name="field" value="{{fieldId}}" id="{{fieldId}}">&nbsp;&nbsp;&nbsp;{{field}}</label>
+						{% endfor %}
+					</div>
+				{% endfor %}
+			</div>
+			<button class="m-4" type="submit">Generate</button>
 		</form>
 	</div>
 {% endblock %}

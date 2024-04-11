@@ -10,7 +10,7 @@
 	<div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
-      <nav class="col-md-2 d-none d-md-block sidebar py-4" id="sidebar">
+      <nav class="col-md-3 sidebar py-4" id="sidebar">
         <h4 class="sidebar-sticky">
           <ul class="nav flex-column">
 						<a class="nav-link text-white py-3 {%if subpage=='home'%}active" aria-current="page{%endif%}" href="./home"><i class="fas fa-home"></i>Home</a>
@@ -24,7 +24,7 @@
       </nav>
 
       <!-- Main content -->
-      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" id="main">
+      <main role="main" class="col-md-9 px-4" id="main">
         {% block main %}
           <div class="container py-5">
 						<h3>@{{userTag}}</h3>

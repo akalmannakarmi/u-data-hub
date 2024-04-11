@@ -116,7 +116,7 @@ class db:
         CREATE INDEX IF NOT EXISTS idx_User_apiKey
         ON User (apiKey);
         CREATE INDEX IF NOT EXISTS idx_Shared_users
-        ON User (ownerId,userId);
+        ON Shared (ownerId,userId);
         
         CREATE TRIGGER IF NOT EXISTS delete_field_rows
         AFTER DELETE ON Category
@@ -136,7 +136,7 @@ class db:
         AFTER DELETE ON User
         FOR EACH ROW
         BEGIN
-            DELETE FROM Data WHERE userId = OLD.id OR ownerId = OLD.id ;
+            DELETE FROM Shared WHERE userId = OLD.id OR ownerId = OLD.id ;
         END;
         ''')
         conn.commit()
