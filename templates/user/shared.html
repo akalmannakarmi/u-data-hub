@@ -11,7 +11,7 @@
 			{% for category, fieldValues in categoriesAndFields.items() %}
 			<div class="col-md-6 col-sm-12 p-2">
 				<h3 class="pb-3">{{category}}</h3>
-				{% for field, fieldId in fieldValues.items() %}
+				{% for (field, fieldId) in fieldValues %}
 					<p class="px-3">
 						<a href="./shared/remove?receiverId={{receiverId}}&dataIds={{fieldId}}">
 							<i class="fas fa-trash-alt"></i>

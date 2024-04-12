@@ -15,10 +15,10 @@ def rmUserShared():
 	if 'userId' not in session:
 		return redirect('/login')
 
-	if "receiverId" not in request.form:
+	if "receiverId" not in request.args:
 		return jsonify({"Require":["receiverId"]})
 	
-	db.rmUserShared(session['userId'],request.form["receiverId"])
+	db.rmUserShared(session['userId'],request.args["receiverId"])
 
 	return redirect('/myProfile/shared')
 
@@ -27,11 +27,11 @@ def removeShared():
 	if 'userId' not in session:
 		return redirect('/login')
 		
-	if "receiverId" not in request.form or "dataIds" not in request.form:
+	if "receiverId" not in request.args or "dataIds" not in request.args:
 		return jsonify({"Require":["receiverId","dataIds"]})
 	
-	dataIds = [int(x) for x in request.form["dataIds"].split(",")]
+	dataIds = [int(x) for x in request.args["dataIds"].split(",")]
 	
-	db.rmShared(session['userId'],request.form["receiverId"],dataIds)
+	db.rmShared(session['userId'],request.args["receiverId"],dataIds)
 
 	return redirect('/myProfile/shared')

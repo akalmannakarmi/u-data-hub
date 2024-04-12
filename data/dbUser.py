@@ -1,4 +1,4 @@
-from .data import db,ConnPool,convertValue,toBlob,db_logger,sqlite3
+from .data import db,ConnPool,convertValue,toBlob,db_logger
 from . import dbAPI
 from pickle import loads,dumps
 
@@ -102,7 +102,7 @@ class dbUser:
 					try:
 						insert_query = "INSERT INTO Data (userId, fieldId, value, isPrivate) VALUES (?, ?, ?, ?)"
 						cursor.execute(insert_query, (userId, fieldId, bvalue, privacy))
-					except sqlite3.IntegrityError:
+					except Exception:
 						update_query = "UPDATE Data SET value = ?, isPrivate = ? WHERE userId = ? AND fieldId = ?"
 						cursor.execute(update_query, (bvalue, privacy, userId, fieldId))
 			conn.commit()
@@ -113,7 +113,7 @@ class dbUser:
 		with ConnPool.getConn() as conn:
 			cursor = conn.cursor()
 
-			q="DELETE FROM Data WHERE userId=? AND fieldId IN ?"
+			q="DELETE FROM Data WHERE userId=? AND fieldId = ?"
 			
 			for field in keys:
 				fieldId,defaultPrivacy=db.categoriesAndFields[category][field]
@@ -148,9 +148,9 @@ class dbUser:
 			
 			tResult = cursor.fetchall()
 			for row in tResult:
-				result.setdefault((row["receiverId"],row["receiver"]), {})
-				result[(row["receiverId"],row["receiver"])].setdefault(row["category"], [])
-				result[(row["receiverId"],row["receiver"])][row["category"]].append((row["field"],row["fieldId"]))
+				result.setdefault((row[0],row[1]), {})
+				result[(row[0],row[1])].setdefault(row[2], [])
+				result[(row[0],row[1])][row[2]].append((row[3],row[4]))
 			cursor.close()
 
 		db_logger.info("Got Shared Datas: %d",userId)
@@ -168,7 +168,7 @@ class dbUser:
 		with ConnPool.getConn() as conn:
 			cursor = conn.cursor()
 			p = ','.join(['?' for _ in fieldIds])
-			cursor.execute(f"DELETE FROM Shared WHERE ownerId = ? AND userId = ? AND fieldId IN {p};",(senderId,receiverId,*fieldIds))
+			cursor.execute(f"DELETE FROM Shared WHERE ownerId = ? AND userId = ? AND fieldId IN ({p});",(senderId,receiverId,*fieldIds))
 			conn.commit()
 			cursor.close()
 		db_logger.info("Remove Some Shared With User: %d->%d  (%s)",senderId,receiverId,str(fieldIds))
@@ -192,6 +192,16 @@ class dbUser:
 			cursor.execute("SELECT fieldIds FROM Requests WHERE id = ?", (requestId,))
 			row = cursor.fetchone()
 			fieldIds = loads(row[0])
+			fieldIds = [int(id) for id in fieldIds]
 			cursor.close()
-		db_logger.info("Got Request Fields: %d",requestId)
+		db_logger.info("Got Request Fields: %d",int(requestId))
 		return fieldIds
+	
+	def shareFields(ownerId,receiverId,fields):
+		with ConnPool.getConn() as conn:
+			cursor = conn.cursor()
+			for fieldId in fields:
+				cursor.execute("INSERT OR IGNORE INTO Shared (ownerId,fieldId,userId) VALUES (?,?,?)", (ownerId,fieldId,receiverId))
+			conn.commit()
+			cursor.close()
+		db_logger.info("Shared Fields: %d->%d %s",ownerId,receiverId,str(fields))
