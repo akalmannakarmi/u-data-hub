@@ -10,5 +10,5 @@
 [X] Auto Insert
 [X] APIKey Regen + hid/show Key
 [X] Alter Field
-[ ] Authentication
-[ ] Sharing
+[X] Authentication
+[X] Sharing

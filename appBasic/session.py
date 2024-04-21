@@ -50,10 +50,10 @@ def signup():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template('basic/login.html',rData={})
+        return render_template('basic/login.html',next=request.args.get("next","/"),rData={})
     
     data = request.form.deepcopy()
-    rq=['username','password']
+    rq=['username','password','next']
     if any(i not in data for i in rq):
         result = f"Require:{','.join(rq)}"
         return jsonify(result)
@@ -62,7 +62,7 @@ def login():
         if data['password']=="qwe":
             session['userId']=0
             return redirect('/')
-        return render_template('basic/login.html', rData=data,error="Invalid username or password")
+        return render_template('basic/login.html',next=request.form.get("next","/"), rData=data,error="Invalid username or password")
 
 
     user = User.query.filter_by(username=data['username']).first()
@@ -70,9 +70,8 @@ def login():
         session['userId']=user.id
 
         login_user(user,remember=True)
-        if request.args.get("next"):
-            return redirect(request.args.get("next"))
-        return redirect('/')
+        print(request.form.get("next"))
+        return redirect(request.form.get("next"))
     
     return render_template('basic/login.html', rData=data,error="Invalid username or password")
 
