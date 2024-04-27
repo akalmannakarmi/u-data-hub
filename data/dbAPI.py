@@ -49,7 +49,7 @@ class dbAPI:
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
             
-            cursor.execute("SELECT userId FROM User WHERE apiKey = ?",(apiKey,))
+            cursor.execute("SELECT id FROM User WHERE apiKey=?",(apiKey,))
             userId=cursor.fetchall()[0][0]
             
             p = ','.join(['?' for _ in fields])
@@ -58,7 +58,7 @@ class dbAPI:
                 SELECT Data.fieldId, Data.value
                 FROM Data
                 LEFT JOIN Shared ON Data.userId = Shared.ownerId AND Data.fieldId = Shared.fieldId
-                WHERE Data.fieldId IN {p} AND 
+                WHERE Data.fieldId IN ({p}) AND 
                 (Data.isPrivate != 1 OR (Data.isPrivate <> 0 AND Shared.userId = ?));
                 """,(*fields,userId))
             
@@ -69,7 +69,7 @@ class dbAPI:
         db_logger.info("API getting user Info")
         with ConnPool.getConn() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT userId FROM User WHERE apiKey = ?",(apiKey,))
+            cursor.execute("SELECT id FROM User WHERE apiKey = ?",(apiKey,))
             userId=cursor.fetchall()[0][0]
             p = ','.join(['?' for _ in fields])
 
@@ -77,7 +77,7 @@ class dbAPI:
                 SELECT Data.fieldId, Data.value
                 FROM Data
                 LEFT JOIN Shared ON Data.userId = Shared.ownerId AND Data.fieldId = Shared.fieldId
-                WHERE Data.userId = ? Data.fieldId IN {p} AND 
+                WHERE Data.userId = ? AND Data.fieldId IN ({p}) AND 
                 (Data.isPrivate = 0 OR (Data.isPrivate <> 0 AND Shared.userId = ?));
                 """,(sharedId,*fields,userId))
             

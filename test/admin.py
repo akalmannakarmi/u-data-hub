@@ -10,7 +10,7 @@ def test():
 		db.addCategory("Test")
 		passed+=1
 	except Exception as e:
-		print("Add Category Failed")
+		print("Add Category Failed",e)
 		failed+=1
 	
 	# Edit Category
@@ -18,7 +18,7 @@ def test():
 		db.editCategory("Test1","Test")
 		passed+=1
 	except Exception as e:
-		print("Edit Category Failed")
+		print("Edit Category Failed",e)
 		failed+=1
 	
 	# Add Field
@@ -26,7 +26,7 @@ def test():
 		db.addField("Test1","Field",1,1)
 		passed+=1
 	except Exception as e:
-		print("Add Field Failed")
+		print("Add Field Failed",e)
 		failed+=1
 	
 	# Edit Field
@@ -34,7 +34,7 @@ def test():
 		db.editField(1,"Field1",3,0)
 		passed+=1
 	except Exception as e:
-		print("Edit Field Failed")
+		print("Edit Field Failed",e)
 		failed+=1
 	
 	# Remove Field
@@ -42,7 +42,7 @@ def test():
 		db.removeField(1)
 		passed+=1
 	except Exception as e:
-		print("Remove Field Failed")
+		print("Remove Field Failed",e)
 		failed+=1
 	
 	# Remove Category
@@ -50,7 +50,7 @@ def test():
 		db.removeCategory("Test1")
 		passed+=1
 	except Exception as e:
-		print("Remove Category Failed")
+		print("Remove Category Failed",e)
 		failed+=1
 	
 	print(f"Admin Module Testing:{passed}/{passed+failed}")

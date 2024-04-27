@@ -1,14 +1,27 @@
-import subprocess
+from test import admin,api,basic,user
 
-# Run a shell command and capture its output
-result = subprocess.run(['echo', 'hello word'], capture_output=True, text=True)
+passed=0
+failed=0
 
-# Check if the command was successful
-if result.returncode == 0:
-    print("Command executed successfully!")
-    # Print the output
-    print("Output:", result.stdout)
-else:
-    print("Command failed!")
-    # Print the error message
-    print("Error:", result.stderr)
+print("Testing Admin Module...")
+(p,f)=admin.test()
+passed+=p
+failed+=f
+
+print("Testing API Module...")
+(p,f)=api.test()
+passed+=p
+failed+=f
+
+print("Testing Basic Module...")
+(p,f)=basic.test()
+passed+=p
+failed+=f
+
+print("Testing User Module...")
+(p,f)=user.test()
+passed+=p
+failed+=f
+
+
+print(f"Testing Result:{passed}/{passed+failed}")

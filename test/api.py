@@ -23,14 +23,14 @@ def test():
 	try:
 		req()
 	except Exception as e:
-		print("API Module failed to Load Requirements")
+		print("API Module failed to Load Requirements",e)
 
 	# Change API Key
 	try:
 		key = db.changeKey(id)
 		passed+=1
 	except Exception as e:
-		print("Failed to Change Key")
+		print("Failed to Change Key",e)
 		failed+=1
 
 	# Validate API Key
@@ -40,7 +40,7 @@ def test():
 			raise BaseException("Invalid Auth Key")
 		passed+=1
 	except Exception as e:
-		print("Failed to Change Key")
+		print("Failed to Change Key",e)
 		failed+=1
 	
 	# Get stats
@@ -48,7 +48,7 @@ def test():
 		db.getStats(key,["Field",])
 		passed+=1
 	except Exception as e:
-		print("Failed to Get Stats")
+		print("Failed to Get Stats",e)
 		failed+=1
 	
 	# Get User Info
@@ -56,7 +56,7 @@ def test():
 		db.getUserInfo(id,key,["Field",])
 		passed+=1
 	except Exception as e:
-		print("Failed to Get User Info")
+		print("Failed to Get User Info",e)
 		failed+=1
 	
 	print(f"API Module Testing:{passed}/{passed+failed}")

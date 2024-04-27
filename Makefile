@@ -4,6 +4,9 @@ install:
 add:
 	python insert.py
 
+check:
+	python test.py
+
 run:
 	python main.py
 

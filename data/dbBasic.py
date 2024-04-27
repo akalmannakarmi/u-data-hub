@@ -9,3 +9,4 @@ class dbBasic:
             cursor = conn.cursor()
             cursor.execute("INSERT INTO User (id,tag,apiKey) VALUES (?,?,?)", (userId,userTag,key))
             conn.commit()
+        return key

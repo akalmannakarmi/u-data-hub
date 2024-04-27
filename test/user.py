@@ -7,9 +7,9 @@ def req():
 	from data import dbAdmin
 	global id,key
 
-	dbBasic.addUser(id,"UserTag")
+	dbBasic.addUser(id,"TestUser")
 	dbAdmin.addCategory("Test1")
-	dbAdmin.addField("Test1","Field",1,1)
+	dbAdmin.addField("Test1","Field1",1,1)
 
 
 def test():
@@ -20,14 +20,14 @@ def test():
 	try:
 		req()
 	except Exception as e:
-		print("User Module failed to Load Requirements")
+		print("User Module failed to Load Requirements",e)
 
 	# Find Users
 	try:
 		db.findUsers("User")
 		passed+=1
 	except Exception as e:
-		print("Failed to Find Users")
+		print("Failed to Find Users",e)
 		failed+=1
 
 	# Get User Data
@@ -35,7 +35,7 @@ def test():
 		db.getUserData(id,id)
 		passed+=1
 	except Exception as e:
-		print("Failed to Get User Data")
+		print("Failed to Get User Data",e)
 		failed+=1
 	
 	# Get My Data
@@ -43,7 +43,7 @@ def test():
 		db.getMyData(id)
 		passed+=1
 	except Exception as e:
-		print("Failed to Get My data")
+		print("Failed to Get My data",e)
 		failed+=1
 	
 	# Get Save Info
@@ -51,7 +51,7 @@ def test():
 		db.saveInfo(id,"Test1",{"Field1":"Value"},{"Field1":1})
 		passed+=1
 	except Exception as e:
-		print("Failed to Save Info")
+		print("Failed to Save Info",e)
 		failed+=1
 	
 	# Get Remove Info
@@ -59,5 +59,9 @@ def test():
 		db.removeInfo(id,"Test1",["Field1",])
 		passed+=1
 	except Exception as e:
-		print("Failed to Remove Info")
+		print("Failed to Remove Info",e)
 		failed+=1
+
+
+	print(f"User Module Testing:{passed}/{passed+failed}")
+	return (passed,failed)

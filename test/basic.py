@@ -10,7 +10,7 @@ def test():
 		db.addUser(89986946,"TestUserTag")
 		passed+=1
 	except Exception as e:
-		print("Add User Failed")
+		print("Add User Failed",e)
 		failed+=1
 	
 	print(f"Basic Module Testing:{passed}/{passed+failed}")
