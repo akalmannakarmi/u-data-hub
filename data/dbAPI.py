@@ -21,6 +21,7 @@ class dbAPI:
             cursor.execute("UPDATE User SET apiKey=? WHERE id=?", (key,userId))
             conn.commit()
             cursor.close()
+        return key
 
     def getDataTypes():
         return db.dataTypes

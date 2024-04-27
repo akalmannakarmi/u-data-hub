@@ -70,7 +70,6 @@ def login():
         session['userId']=user.id
 
         login_user(user,remember=True)
-        print(request.form.get("next"))
         return redirect(request.form.get("next"))
     
     return render_template('basic/login.html', rData=data,error="Invalid username or password")

@@ -12,3 +12,5 @@
 [X] Alter Field
 [X] Authentication
 [X] Sharing
+[ ] Fix Auth Security Issue
+[ ] Fix Sigin up redirect
