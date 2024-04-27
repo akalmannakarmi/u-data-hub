@@ -5,7 +5,6 @@ def test():
 	passed=0
 	failed=0
 
-	##### Testing Categories
 	# Add Category
 	try:
 		db.addCategory("Test")
@@ -53,3 +52,6 @@ def test():
 	except Exception as e:
 		print("Remove Category Failed")
 		failed+=1
+	
+	print(f"Admin Module Testing:{passed}/{passed+failed}")
+	return (passed,failed)
