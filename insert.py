@@ -31,12 +31,12 @@ with open("insert/data.json","r",encoding='utf-8') as f:
 for user,data in userData.items():
     cur= conn.cursor()
     try:
-        cur.execute("INSERT INTO user (username,password,is_active) VALUES (?,?,?)",(user,hash_password(user),1))
+        cur.execute("INSERT INTO User (username,password,is_active) VALUES (?,?,?)",(user,hash_password(user),1))
         conn.commit()
     except Exception as e:
         print(f"Failed to add user:{user} Error:{e}")
         pass
-    cur.execute("SELECT id FROM user WHERE username = ?",(user,))
+    cur.execute("SELECT id FROM User WHERE username = ?",(user,))
     id_ = cur.fetchone()[0]
     cur.close()
 
@@ -45,7 +45,7 @@ for user,data in userData.items():
     except Exception as e:
         print(f"Failed to add User to data:{id_},{user} = {type(id_)},{type(user)}")
         pass
-    
+
     for category,fieldData in data.items():
         fieldPrivacy = {k:0 for k in fieldData}
         try:

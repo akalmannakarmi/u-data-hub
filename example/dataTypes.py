@@ -1,6 +1,6 @@
 import requests
 
-apiKey="d2e2755722ffd69091d42650766b63af"
+apiKey="755c00bb81b46b63906d8480c9803c01"
 url="http://127.0.0.1:5000/api/getDataTypes"
 
 response = requests.post(url,{"apiKey":apiKey})
