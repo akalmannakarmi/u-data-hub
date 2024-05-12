@@ -15,7 +15,7 @@ def requeste():
 	
 	reqId = db.getRequestId(request.form.getlist("fields"))
 	url= request.url_root+f"request?receiverId={session['userId']}&reqId={reqId}"
-	return jsonify(url)
+	return redirect(url)
 
 @app.route('/request',methods=["GET","POST"])
 def acceptRequest():
