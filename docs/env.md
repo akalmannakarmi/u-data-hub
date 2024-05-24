@@ -1,15 +1,19 @@
-### Required Environment variables
-# SECRET_KEY
-``` Windows
+# Required Environment variables
+## SECRET_KEY
+### Windows
+```
 set SECRET_KEY your_secret_key_here
 ```
-``` Unix
+### Unix
+```
 export SECRET_KEY=your_secret_key_here
 ```
 # SQLALCHEMY_DATABASE_URI
-``` Windows
+### Windows
+```
 set SQLALCHEMY_DATABASE_URI postgresql://username:password@localhost/db_name
 ```
-``` Unix
+### Unix
+```
 export SQLALCHEMY_DATABASE_URI=postgresql://username:password@localhost/db_name
 ```

@@ -1,0 +1,73 @@
+body{
+	margin: 0;
+}
+
+.sc-bg-dark .form-control {
+    background-color: #000; /* Dark background color */
+    color: #fff; /* Light text color */
+	border-color: #444;
+}
+
+.sc-bg-dark {
+	background: #000;
+}
+.sc-bg-dark .sc-bg-dark {
+	background: #111;
+}
+.sc-bg-dark .sc-bg-dark .sc-bg-dark {
+	background: #222;
+}
+.sc-bg-dark .sc-bg-dark .sc-bg-dark .sc-bg-dark {
+	background: #333;
+}
+.sc-bg-dark .sc-bg-dark .sc-bg-dark .sc-bg-dark .sc-bg-dark {
+	background: #444;
+}
+
+.sc-bg-light {
+	background: #fff;
+}
+.sc-bg-light .sc-bg-light {
+	background: #eee;
+}
+.sc-bg-light .sc-bg-light .sc-bg-light {
+	background: #ddd;
+}
+.sc-bg-light .sc-bg-light .sc-bg-light .sc-bg-light {
+	background: #ccc;
+}
+.sc-bg-light .sc-bg-light .sc-bg-light .sc-bg-light .sc-bg-light {
+	background: #bbb;
+}
+
+.sc-text-dark {
+	color: #000;
+}
+.sc-text-dark .sc-text-dark {
+	color: #111;
+}
+.sc-text-dark .sc-text-dark .sc-text-dark {
+	color: #222;
+}
+.sc-text-dark .sc-text-dark .sc-text-dark .sc-text-dark {
+	color: #333;
+}
+.sc-text-dark .sc-text-dark .sc-text-dark .sc-text-dark .sc-text-dark {
+	color: #444;
+}
+
+.sc-text-light {
+	color: #fff;
+}
+.sc-text-light .sc-text-light {
+	color: #eee;
+}
+.sc-text-light .sc-text-light .sc-text-light {
+	color: #ddd;
+}
+.sc-text-light .sc-text-light .sc-text-light .sc-text-light {
+	color: #ccc;
+}
+.sc-text-light .sc-text-light .sc-text-light .sc-text-light .sc-text-light {
+	color: #bbb;
+}

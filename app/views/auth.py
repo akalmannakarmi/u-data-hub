@@ -1,15 +1,15 @@
 from flask import render_template,session,request,redirect
+from app.wrapers import isNotUser
 from . import app
-from app.models import User
 
 @app.route('/login',methods=["GET"])
+@isNotUser
 def login():
-	if 'userId' in session and User.isUser(session['userId']):
-		return redirect('/')
-	return render_template('auth/login.html',session=session)
+	error=request.args.get('error',None)
+	next=request.args.get('next','/')
+	return render_template('auth/login.html',session=session,error=error,next=next,rData={})
 
 @app.route('/signUp',methods=["GET"])
+@isNotUser
 def signUp():
-	if 'userId' in session and User.isUser(session['userId']):
-		return redirect('/')
-	return render_template('auth/signUp.html',session=session)
+	return render_template('auth/signUp.html',session=session,error=None,rData={})

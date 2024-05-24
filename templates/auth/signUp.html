@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+{% block body %}
+<div class="d-flex mt-5 align-items-center">
+	<div class="mx-auto">
+			<h1 class="text-center">Sign Up</h1>
+			<div class="card shadow rounded border border-2 border-dark">
+					<div class="card-body mt-40 mx-auto px-5">
+							<form class="contact-form" action="./signUp" method="post">
+									<label for="username" class="text-dark">User Name</label>
+									<input type="username" class="form-control" id="username" placeholder="Enter username" name="username" value="{{rData['username']}}">
+									<br>
+									<label for="userTag" class="text-dark">User Tag</label>
+									<input type="userTag" class="form-control" id="userTag" placeholder="Enter userTag" name="userTag" value="{{rData['userTag']}}">
+									<br>
+									<label for="password" class="text-dark">Password</label>
+									<input type="password" class="form-control" id="password" placeholder="Enter password" name="password" value="{{rData['password']}}">
+									<br>
+									<label for="confirm-password" class="text-dark">Confirm Password</label>
+									<input type="password" class="form-control" id="confirm-password" placeholder="Enter confirm-password" name="confirm-password" value="{{rData['confirm-password']}}">
+									<br><br>
+									<a href="./login">login instead?</a>
+									<br>
+									{% if error %}
+											<div class="alert alert-danger d-flex align-items-center" role="alert" id="failed-alert">
+													<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+													<div>
+													{{error}}
+													</div>
+											</div>
+									{% endif %}
+									<button class="btn btn-primary" id="submit" type="submit" value="signup">Sign Up</button>
+							</form>
+					</div>
+			</div>
+	</div>
+</div>
+{% endblock %}
